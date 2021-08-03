@@ -180,7 +180,7 @@ export default function Home() {
           <hr />
           <iframe
             src="https://theconvo.space/embed/dt?url=https%3A%2F%2Ffairdrop.0xessential.com%2F&threadId=fairdrop-discussion"
-            allowtransparency="true"
+            allowTransparency={true}
             width="100%"
             style={{ border: 'none' }}
           >
