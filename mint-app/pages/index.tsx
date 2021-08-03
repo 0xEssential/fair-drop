@@ -191,14 +191,31 @@ export default function Home() {
             battle-tested at all.
           </p>
           <p>
-            One area of concern is with a large number of addresses eligible to
-            mint, transaction costs of passing these addresses back to L1 might
-            become too expensive. One alternative might be to sell users an
-            ERC20 token on Polygon, allow the user to bridge that token to L1,
-            and then accept that token as payment for minting an NFT. Or mint
-            NFTs on Polygon and allow users to migrate them to L1. We don&apos;t
-            have all of the answers but hope to kick off a conversation with the
-            community!
+            One issue with this approach is that it does not prevent bots from
+            signing up thousands of addresses. Since registration is cheap in tx
+            cost and onchain, there is not a great way to prevent this. We could
+            require at least a small payment for registration, which might help,
+            but adds complexity and might not be accepted by users. It is true
+            that the bot owner would need to check each of their registered
+            addresses for eligibility, and purchase through eligible tokens, but
+            this can be done pretty easily too, and captchas or other web-based
+            tools of course cannot prevent interacting with the contracts
+            directly.
+          </p>
+          <p>
+            Another area of concern is with a large number of addresses eligible
+            to mint, transaction costs of passing these addresses back to L1
+            might become too expensive. One alternative might be to sell users
+            an ERC20 token on Polygon, allow the user to bridge that token to
+            L1, and then accept that token as payment for minting an NFT - this
+            might also help with the bot problem, where migrating an ERC20 token
+            is a bit more complex of a process. Or mint NFTs on Polygon and
+            allow users to migrate them to L1 if they choose.
+          </p>
+          <p>
+            We don&apos;t have all of the answers but hope to kick off a
+            conversation with the community! Thanks for reading, PRs welcome,
+            and let us know your thoughts?
           </p>
           <iframe
             src="https://theconvo.space/embed/dt?url=https%3A%2F%2Ffairdrop.0xessential.com%2F&threadId=fairdrop-discussion"
