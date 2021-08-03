@@ -1,10 +1,13 @@
 import Head from 'next/head';
-import React from 'react';
+import React, { useState } from 'react';
+import Modal from 'react-modal';
 
 import Button from '../components/Button';
+import Drop from '../components/Drop';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <div className={styles.container}>
       <Head>
@@ -40,7 +43,7 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.buttonContainer}>
-            <Button onClick={() => console.log('modal?')}>Try it</Button>
+            <Button onClick={() => setModalOpen(true)}>Try it</Button>
           </div>
         </div>
         <div className={styles.article}>
@@ -178,6 +181,25 @@ export default function Home() {
             of minters relative to remaining tokens.
           </p>
           <hr />
+
+          <p>
+            While there are certainly potential pitfalls and improvements to the
+            implementation of this approach, we think these mechanics would be a
+            huge win for NFT collectors without adding much of a burden to
+            project developers. Note that this was hacked together quickly, and
+            while we are testing it in production, this code is not audited or
+            battle-tested at all.
+          </p>
+          <p>
+            One area of concern is with a large number of addresses eligible to
+            mint, transaction costs of passing these addresses back to L1 might
+            become too expensive. One alternative might be to sell users an
+            ERC20 token on Polygon, allow the user to bridge that token to L1,
+            and then accept that token as payment for minting an NFT. Or mint
+            NFTs on Polygon and allow users to migrate them to L1. We don&apos;t
+            have all of the answers but hope to kick off a conversation with the
+            community!
+          </p>
           <iframe
             src="https://theconvo.space/embed/dt?url=https%3A%2F%2Ffairdrop.0xessential.com%2F&threadId=fairdrop-discussion"
             allowTransparency={true}
@@ -188,6 +210,14 @@ export default function Home() {
           </iframe>
         </div>
       </main>
+      <Modal
+        isOpen={modalOpen}
+        closeTimeoutMS={500}
+        onRequestClose={() => setModalOpen(false)}
+        contentLabel="Example Modal"
+      >
+        <Drop />
+      </Modal>
     </div>
   );
 }
