@@ -2,7 +2,6 @@ import Head from 'next/head';
 import React from 'react';
 
 import Button from '../components/Button';
-import Drop from '../components/Drop';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
@@ -41,7 +40,7 @@ export default function Home() {
             </p>
           </div>
           <div className={styles.buttonContainer}>
-            <Button>Try it</Button>
+            <Button onClick={() => console.log('modal?')}>Try it</Button>
           </div>
         </div>
         <div className={styles.article}>
