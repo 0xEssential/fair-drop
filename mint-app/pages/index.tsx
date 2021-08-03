@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
 
+import Button from '../components/Button';
 import Drop from '../components/Drop';
 import styles from '../styles/Home.module.css';
 
@@ -19,25 +20,32 @@ export default function Home() {
 
       <main className={styles.main}>
         <div className={styles.header}>
-          <h1 className={styles.title}>FairDrop 🎡</h1>
+          <div className={styles.titleContainer}>
+            <h1 className={styles.title}>
+              <em>FairDrop</em> 🎡
+            </h1>
 
-          <p className={styles.description}>
-            A proof-of-concept for fairer NFT drops from 0xEssential
-          </p>
+            <p className={styles.description}>
+              A proof-of-concept for fair NFT drops
+            </p>
 
-          <p>
-            <a
-              href="https://github.com/0xessential/fair-drop"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Github
-            </a>{' '}
-            • Etherscan • Polygonscan
-          </p>
+            <p>
+              <a
+                href="https://github.com/0xessential/fair-drop"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Github
+              </a>{' '}
+              • Etherscan • Polygonscan
+            </p>
+          </div>
+          <div className={styles.buttonContainer}>
+            <Button>Try it</Button>
+          </div>
         </div>
         <div className={styles.article}>
-          <Drop />
+          {/* <Drop /> */}
           <p>
             At{' '}
             <a
@@ -96,11 +104,16 @@ export default function Home() {
           <p>
             0xEssential is committed to building open source developer tools for
             NFT projects. We are primarily focused on inheritable contracts that
-            provide metaverse portability and utility, but any time w&apos;re
-            building tools for ourselves, w&apos;ll also share them back to the
-            community - a rising tide lifts all boats.
+            provide metaverse portability and utility, but any time we build
+            tools for ourselves, we like to share them back to the community - a
+            rising tide lifts all boats⛵️
           </p>
-          <p>Our ideal for a more fair NFT drop approach solution is: </p>
+          <p>
+            Our ideal NFT drop is average user first - no FOMO or failed
+            transactions, fewer bots. No drama, no whales minting 30% of supply,
+            for better or worse. These are the key aspects of a{' '}
+            <em>FairDrop</em>:
+          </p>
           <ul>
             <li>
               <strong>Efficient</strong> - no more gas wars, and no performance
@@ -124,44 +137,56 @@ export default function Home() {
           </ul>
 
           <p>
-            The solution w&apos;ve come up with is a system where users can
-            register their interest for an NFT drop. We use the Polygon chain
-            for this registration flow to keep things cheap and efficient. When
-            the project is ready to release, we use Chainlink VRF to select
-            eligible minter addresses from the list of registrants. We then use
-            Polygon&apos;s State Transfer to pass the list of eligible minter
-            addresses to the Ethereum mainnet contract.
+            We took all of those requirements and built a system that uses
+            raffles with a <em>right to buy</em> reward. Random winners get to
+            mint NFTs at a fair floor price, wherever they are in the world,
+            whether they&apos;re influencers, etherscan minters, bot makers, or
+            MEV manipulators.
+            <br />
+          </p>
+          <hr />
+          <h2> 1. Register</h2>
+          <h3>Address registers for drop on-chain</h3>
+          <p>
+            A user can register their interest in an NFT drop in a decentralized
+            way. We use Polygon for registration to keep things cheap. A project
+            can launch their list before release to build and gauge interest,
+            while users know they have a fair chance to mint.
           </p>
 
+          <h2>2. Raffle</h2>
+          <h3>Totally fair random selection</h3>
           <p>
-            This way we select eligible minters in an onchain and provably
-            random manner. The number of eligible minters should of course be
-            less than the remaining mints - if each user can mint 3 tokens, and
-            you have 9,999 tokens in your drop, then you would select 3,333
-            addresses per tranche.
-          </p>
-          <p>
-            Eligible minters will then have 24 hours to visit the minting site
-            and mint their tokens. There won&apos;t be any gas wars as every
-            eligible minter has 24 hours to mint tokens that are set aside for
-            them.
-          </p>
-          <p>
-            If an eligible minter does not mint during their eligibility window,
-            then after 24 hours we can select a new tranche of eligible minters
-            who will also have 24 hours to purchase. Rinse and repeat until we
-            are done.
+            Once a project is ready for launch we use Chainlink VRF to select a
+            random list of eligible minters. These addresses can each mint{' '}
+            <em>n</em> tokens, where <em>n x minters</em> is equal to available
+            tokens. Addresses are passed to Ethereum mainnet for minting.
           </p>
 
+          <h2>3. Redeem</h2>
+          <h3>Chilled out and cheap mints</h3>
           <p>
-            To demonstrate how this works, we deployed our contracts and built a
-            dapp that you are currently viewing! W&apos;re selling 3 NFTs that
-            you can think of as badges for committing to doing fairer drops. You
-            can register for your opportunity to buy below, and check back later
-            to see if you&apos;ve won the raffle for a chance to mint one of our
-            NFTs. W&apos;ve priced the NFTs just to cover the cost of contract
-            deployment.
+            Eligible minting addresses have 24 hours to mint their tokens. They
+            mint on Ethereum mainnet without the need for gas wars or staying up
+            all night to catch a drop.
           </p>
+
+          <h2>4. Repeat</h2>
+          <h3></h3>
+          <p>
+            After 24 hours a new batch of eligible minters is selected for
+            minting. Previous minters become ineligible and we select a new set
+            of minters relative to remaining tokens.
+          </p>
+          <hr />
+          <iframe
+            src="https://theconvo.space/embed/dt?url=https%3A%2F%2Ffairdrop.0xessential.com%2F&threadId=fairdrop-discussion"
+            allowtransparency="true"
+            width="100%"
+            style={{ border: 'none' }}
+          >
+            Comments
+          </iframe>
         </div>
       </main>
     </div>

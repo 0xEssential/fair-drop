@@ -19,6 +19,14 @@ a {
   box-sizing: border-box;
 }
 
+ul {
+  margin: 3rem 0;
+}
+
 li {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+hr { 
+  margin: 3rem 0;
 }
