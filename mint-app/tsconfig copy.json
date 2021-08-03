@@ -1,0 +1,57 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+  
+    "moduleResolution": "node",
+  
+    "outDir": "dist",
+    // "target": "esnext",
+    "jsx": "preserve",
+    "declaration": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": false,
+    // "module": "esnext",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "~*": [
+        "./src/*"
+      ]
+    },
+    "typeRoots": [
+      "./src/@types",
+      "../node_modules/@types"
+    ],
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "postCssOptions": {
+            "useConfig": true
+          }
+        }
+      }
+    ],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "files": ["./hardhat.config.ts"]
+}

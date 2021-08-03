@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "fair-drop",
+  "version": "0.0.1-alpha",
+  "description": "Proof of concept for an NFT drop using a raffle for chance to buy approach",
+  "repository": "github:0xessential/fair-drop",
+  "author": "sbauch",
+  "license": "MIT",
+  "keywords": [
+    "ethereum",
+    "smart-contracts",
+    "hardhat",
+    "solidity",
+    "ERC721",
+    "NFT"
+  ],
+  "workspaces": [
+    "./contract",
+    "./mint-app"
+  ]
+}

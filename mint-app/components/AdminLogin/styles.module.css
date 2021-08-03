@@ -1,0 +1,5 @@
+.root {
+  background: grey;
+  max-width: 40%;
+  flex-grow: 1;
+}
