@@ -197,10 +197,13 @@ export default function Home() {
             require at least a small payment for registration, which might help,
             but adds complexity and might not be accepted by users. It is true
             that the bot owner would need to check each of their registered
-            addresses for eligibility, and purchase through eligible tokens, but
-            this can be done pretty easily too, and captchas or other web-based
-            tools of course cannot prevent interacting with the contracts
-            directly.
+            addresses for eligibility, and purchase through eligible addresses,
+            but this can be done pretty easily too, and captchas or other
+            web-based tools of course cannot prevent interacting with the
+            contracts directly. In some ways we are forced to choose between
+            decentralization and fairness. Parallel used email registration with
+            a centralized server - this makes it a lot easier to prevent bots,
+            but also introduces trust and the potential of censorship.
           </p>
           <p>
             Another area of concern is with a large number of addresses eligible
@@ -217,11 +220,12 @@ export default function Home() {
             conversation with the community! Thanks for reading, PRs welcome,
             and let us know your thoughts?
           </p>
+          <hr />
           <iframe
-            src="https://theconvo.space/embed/dt?url=https%3A%2F%2Ffairdrop.0xessential.com%2F&threadId=fairdrop-discussion"
+            src="https://theconvo.space/embed/dt?url=https%3A%2F%2Ffairdrop.0xessential.com%2F&threadId=fairdrop-discussion&theme=light"
             allowTransparency={true}
             width="100%"
-            style={{ border: 'none' }}
+            style={{ border: 'none', margin: '24px 0' }}
           >
             Comments
           </iframe>
