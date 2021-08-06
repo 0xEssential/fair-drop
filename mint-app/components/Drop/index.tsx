@@ -1,36 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 
-import {
-  abi,
-  address as smartAddress,
-} from '../../../contracts/deployments/mumbai/FairDropRegistration.json';
-import { Web3Context } from '../../contexts/web3Context';
-import useContract from '../../hooks/useContract';
-import Button from '../Button';
 import Register from '../Register';
 import styles from './styles.module.css';
-
-const chainArgs = {
-  '80001': {
-    chainId: '0x13881',
-    chainName: 'Mumbai Testnet',
-    rpcUrls: ['https://rpc-mumbai.matic.today/'],
-    iconUrls: [],
-    nativeCurrency: {
-      name: 'Matic',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
-    blockExplorerUrls: ['https://mumbai-explorer.matic.today/'],
-  },
-};
-
-enum RegistrationStatus {
-  Unregistered = 'Unregistered',
-  Registered = 'Registered',
-  Eligible = 'Eligible',
-  Ineligible = 'Inelegible',
-}
 
 export default function Drop() {
   return (
