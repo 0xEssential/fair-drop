@@ -1,6 +1,13 @@
 .root {
-  border: 4px dashed #FF748A;
-  border-radius: 12px;
+  /* border: 4px dashed #FF748A;
+  border-radius: 12px; */
   padding: 40px;
-  width: 300px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.root > img {
+  max-width: 320px;
+  margin-right: 2em;
 }

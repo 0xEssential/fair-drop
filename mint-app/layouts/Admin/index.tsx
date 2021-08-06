@@ -17,7 +17,7 @@ const AdminLayout = ({
   //   console.warn(provider, network);
   //   setModalOpen(provider && network !== parseInt(process.env.CHAIN_ID, 10));
   // }, [provider, network]);
-
+  console.warn('session', session);
   return (
     <main className={styles.admin}>
       {/* <Modal visible={modalOpen} title="Wrong Network" footer={null}>

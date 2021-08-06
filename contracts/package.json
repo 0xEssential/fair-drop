@@ -41,6 +41,7 @@
     "hardhat-deploy-ethers": "^0.3.0-beta.10",
     "hardhat-gas-reporter": "^1.0.4",
     "mocha": "^8.1.1",
+    "nft.storage": "^3.0.1",
     "prettier": "^2.0.5",
     "prettier-plugin-solidity": "^1.0.0-alpha.57",
     "sinon": "^10.0.0",

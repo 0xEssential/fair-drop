@@ -235,7 +235,6 @@ export default function Home() {
         isOpen={modalOpen}
         closeTimeoutMS={500}
         onRequestClose={() => setModalOpen(false)}
-        contentLabel="Example Modal"
       >
         <Drop />
       </Modal>

@@ -26,7 +26,7 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
         address _fxRoot
     )
     FxBaseRootTunnel(_checkpointManager, _fxRoot)
-    ERC721PresetMinterPauserAutoId("0xEssential FairDrop", "FAIRDROP", "ipfs://")
+    ERC721PresetMinterPauserAutoId("0xEssential FairDrop", "FAIRDROP", "ipfs://bafybeia6qx7kxhlps5gw2syrrlrrmc5hfesvayzpqqcnduoip3lnplminm/")
     {} // solhint-disable-line no-empty-blocks
 
     /**
@@ -58,9 +58,9 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
     /**
     * @notice Public mint function
     */
-    function approvedMint() public payable {
-        require(approvedMinters[msg.sender], "Not allowed to mint");
-        require(msg.value >= mintPrice, "More ETH");
+    function mint() public payable {
+        require(approvedMinters[msg.sender], "FD:m:403");
+        require(msg.value == mintPrice, "FD:m:402");
         approvedMinters[msg.sender] = false;
         mint(msg.sender);
         remainingTokens -= 1;
@@ -83,5 +83,12 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
     function receiveMessage(bytes memory inputData) public override onlyOwner {
         bytes memory message = _validateAndExtractMessage(inputData);
         _processMessageFromChild(message);
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+
+        string memory baseURI = _baseURI();
+        return string(abi.encodePacked(baseURI, tokenId + 1, ".json"));
     }
 }

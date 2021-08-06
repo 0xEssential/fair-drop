@@ -22,7 +22,7 @@ const config: HardhatUserConfig = {
     deployer: 0,
   },
   etherscan: {
-    apiKey: process.env.POLYGONSCAN_API_KEY,
+    apiKey: process.env.ETHERSCAN_API_KEY,
     // NB: hardhat verify currently doesn't support per-network API keys
     // for contract verification. When verifying on Polygon chains, use
     // process.env.POLYGONSCAN_API_KEY and process.env.ETHERSCAN_API_KEY
