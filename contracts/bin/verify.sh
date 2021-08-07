@@ -12,7 +12,6 @@ then
     "0x2890bA17EfE978480615e330ecB65333b880928e" \
     "0x3d1d3E34f7fB6D26245E6640E1c50710eFFf15bA"
 else
-echo $POLYGONSCAN_API_KEY
   ADDRESS=`jq -r '.address' ./deployments/${NETWORK}/FairDropRegistration.json`
   ETHERSCAN_API_KEY=$POLYGONSCAN_API_KEY npx hardhat verify --network $NETWORK $ADDRESS \
     "0x8C7382F9D8f56b33781fE506E897a4F1e2d17255" \

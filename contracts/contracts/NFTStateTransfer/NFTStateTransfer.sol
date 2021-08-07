@@ -80,6 +80,12 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
         payable(msg.sender).transfer(balance);
     }
 
+    /**
+    * @notice Receive list of eligible purchasers from L2
+    * @dev We use Polygon to make registration and random selection inexpensive, then pass the list
+    * of eligible buying accounts to this contract.
+    * @param inputData proof generated for transaction - see https://docs.matic.network/docs/develop/l1-l2-communication/state-transfer
+    */
     function receiveMessage(bytes memory inputData) public override onlyOwner {
         bytes memory message = _validateAndExtractMessage(inputData);
         _processMessageFromChild(message);

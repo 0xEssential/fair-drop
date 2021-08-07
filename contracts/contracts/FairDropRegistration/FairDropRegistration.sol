@@ -83,14 +83,15 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
             delete currentlyEligible[i];
         }
 
-        // unbound, should be more careful here
-        while (currentlyEligible.length < Constants.WINDOW_PARTICIPANTS) {
+        uint256 iterations = 0;
+        while (currentlyEligible.length < Constants.WINDOW_PARTICIPANTS && iterations < registrants.length) {
             uint256 localPseudoRandom = uint256(keccak256(abi.encode(randomness, block.timestamp)));
             address eligible = registrants[localPseudoRandom % registrants.length];
             if (registrationStatus[eligible] == RegistrationStatus.Registered) {
                 currentlyEligible.push(eligible);
                 registrationStatus[eligible] = RegistrationStatus.Eligible;
             }
+            iterations += 1;
         }
 
         _sendMessageToRoot(abi.encodePacked(currentlyEligible));
