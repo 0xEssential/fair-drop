@@ -34,27 +34,31 @@ enum RegistrationStatus {
 
 export default function Register() {
   const [mintWindow, setWindow] = useState(0);
+  const [registering, setRegistering] = useState(false);
 
   const { address, onboard, provider, network } = useContext(Web3Context);
-  console.warn(smartAddress);
 
-  const isMatic = network && [137, 80001].includes(network);
+  const isMatic = (_network) => _network && [137, 80001].includes(_network);
   const contract = useContract(smartAddress, abi);
 
-  const getStatus = async () => {
-    if (!contract || !isMatic || !address)
-      return RegistrationStatus.Unregistered;
+  const { data: status } = useSWR(
+    isMatic(network) ? 'status' : null,
+    async () => {
+      console.warn('getStatus', isMatic(network), network);
+      if (!isMatic(network)) return RegistrationStatus.Unregistered;
 
-    const _status = await contract.registrationStatus(address);
-    console.warn(_status, Object.values(RegistrationStatus)[_status]);
-    return Object.values(RegistrationStatus)[_status];
-  };
-
-  const { data: status, revalidate } = useSWR('status', getStatus);
+      const _status = await contract.registrationStatus(address);
+      console.warn(_status, Object.values(RegistrationStatus)[_status]);
+      return Object.values(RegistrationStatus)[_status];
+    },
+    {
+      refreshInterval: 500,
+      isPaused: () => !registering,
+    },
+  );
 
   useEffect(() => {
-    if (!contract || !isMatic || status === RegistrationStatus.Registered)
-      return;
+    if (!contract || !isMatic(network)) return;
     const getWindow = async () => {
       const _mintWindow = await contract.nextWindow();
       setWindow(_mintWindow.toNumber());
@@ -98,7 +102,7 @@ export default function Register() {
         <Button
           onClick={async () => {
             await contract?.registerForDrop();
-            setTimeout(revalidate, 500);
+            setRegistering(true);
           }}
         >
           Register for Drop

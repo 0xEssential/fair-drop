@@ -26,7 +26,7 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
         address _fxRoot
     )
     FxBaseRootTunnel(_checkpointManager, _fxRoot)
-    ERC721PresetMinterPauserAutoId("0xEssential FairDrop", "FAIRDROP", "ipfs://bafybeia6qx7kxhlps5gw2syrrlrrmc5hfesvayzpqqcnduoip3lnplminm/")
+    ERC721PresetMinterPauserAutoId("0xEssential FairDrop", "FAIRDROP", "ipfs://bafybeicoe6oe2yoeubcpljqqec3vul4n4l7zz7adgrjegijlw3ndx34vce/")
     {} // solhint-disable-line no-empty-blocks
 
     /**
@@ -83,12 +83,5 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
     function receiveMessage(bytes memory inputData) public override onlyOwner {
         bytes memory message = _validateAndExtractMessage(inputData);
         _processMessageFromChild(message);
-    }
-
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-
-        string memory baseURI = _baseURI();
-        return string(abi.encodePacked(baseURI, tokenId + 1, ".json"));
     }
 }

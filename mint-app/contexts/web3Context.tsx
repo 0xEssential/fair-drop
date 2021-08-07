@@ -15,7 +15,7 @@ const defaultValue: {
   address?: string;
   provider?: Web3Provider;
   notify?: { hash: (txHash: string) => void };
-  network?: undefined;
+  network?: number;
 } = {};
 
 const Web3Context = createContext(defaultValue);
@@ -33,6 +33,7 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     const onboard = initOnboard({
       address: setAddress,
       network: (network) => {
+        console.warn('SETTING NETWORK', network);
         setNetwork(network);
       },
       wallet: (wallet) => {
@@ -41,18 +42,18 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
 
           const provider = new Web3Provider(wallet.provider, 'any');
 
-          provider.on('network', (newNetwork, oldNetwork) => {
-            console.warn(newNetwork);
-            // When a Provider makes its initial connection, it emits a "network"
-            // event with a null oldNetwork along with the newNetwork. So, if the
-            // oldNetwork exists, it represents a changing network
-            if (
-              oldNetwork &&
-              newNetwork.chainId !== parseInt(process.env.CHAIN_ID, 10)
-            ) {
-              // signOut();
-            }
-          });
+          // provider.on('network', (newNetwork, oldNetwork) => {
+          //   console.warn(newNetwork);
+          //   // When a Provider makes its initial connection, it emits a "network"
+          //   // event with a null oldNetwork along with the newNetwork. So, if the
+          //   // oldNetwork exists, it represents a changing network
+          //   if (
+          //     oldNetwork &&
+          //     newNetwork.chainId !== parseInt(process.env.CHAIN_ID, 10)
+          //   ) {
+          //     // signOut();
+          //   }
+          // });
 
           setProvider(provider);
           window.localStorage.setItem('selectedWallet', wallet.name);

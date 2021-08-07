@@ -50,11 +50,7 @@ export default function Home() {
           {/* <Drop /> */}
           <p>
             At{' '}
-            <a
-              href="https://twitter.com/0xessential"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="https://0xessential.com" target="_blank" rel="noreferrer">
               0xEssential
             </a>{' '}
             we&apos;ve been learning from other NFT collectible drops to

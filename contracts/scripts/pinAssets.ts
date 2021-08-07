@@ -11,7 +11,7 @@ async function main() {
 
   for (const id of Array.from(Array(5).keys())) {
     const fileData = fs.readFileSync(path.join(__dirname, `../assets/${id + 1}.png`))
-    const imageFile = new File([fileData], `FairDrop-${id + 1}.png`, { type: 'image/png'});
+    const imageFile = new File([fileData], `FairDrop-${id}.png`, { type: 'image/png'});
     const image = await storage.storeBlob(imageFile);
 
     const metadata = {
@@ -26,7 +26,7 @@ async function main() {
     }
 
     directory.push(
-      new File([JSON.stringify(metadata, null, 2)], `${id}.json`)
+      new File([JSON.stringify(metadata, null, 2)], `${id}`)
     )
   }
 

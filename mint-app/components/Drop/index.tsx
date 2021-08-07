@@ -14,8 +14,8 @@ export default function Drop() {
           FairDrop approach.
         </p>
         <p>
-          Each piece is a 1 of 1 artwork, featuring the OG Wrasslers Howler
-          Dawes and Infinity Rush from 0xEssential&apos;s project Wrasslers.
+          These NFTs are 1 of 1 of 5 featuring Howler Dawes and Infinity Rush
+          from 0xEssential&apos;s project Wrasslers.
         </p>
         <p>
           <strong>Tokens Available:</strong> 5

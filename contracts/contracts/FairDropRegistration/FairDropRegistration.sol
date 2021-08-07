@@ -24,7 +24,7 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
 
     mapping (address => RegistrationStatus) public registrationStatus;
     address[] internal registrants;
-    address[] internal currentlyEligible;
+    address[] public currentlyEligible;
     uint256 public remainingMints = Constants.MAX_TOKEN_COUNT;
 
     // Timestamp when next eligible buyers can be selected
