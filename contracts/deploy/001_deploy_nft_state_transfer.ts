@@ -1,6 +1,6 @@
 import {HardhatRuntimeEnvironment} from 'hardhat/types';
 import {DeployFunction} from 'hardhat-deploy/types';
-import {chainlinkEnv, stateTransferEnv} from '../utils/network';
+import {stateTransferEnv} from '../utils/network';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const {deployments, getNamedAccounts, getChainId} = hre;
@@ -18,7 +18,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const {deployer} = await getNamedAccounts();
   const {ChildChainManager, _fxChild} = stateTransferEnv(networkName);
 
-  console.warn(deployer, networkName, ChildChainManager, _fxChild)
   await deploy('NFTStateTransfer', {
     from: deployer,
     args: [ChildChainManager, _fxChild],

@@ -44,16 +44,13 @@ export default function Register() {
   const { data: status } = useSWR(
     isMatic(network) ? 'status' : null,
     async () => {
-      console.warn('getStatus', isMatic(network), network);
-      if (!isMatic(network)) return RegistrationStatus.Unregistered;
-
       const _status = await contract.registrationStatus(address);
-      console.warn(_status, Object.values(RegistrationStatus)[_status]);
       return Object.values(RegistrationStatus)[_status];
     },
     {
       refreshInterval: 500,
       isPaused: () => !registering,
+      initialData: RegistrationStatus.Unregistered,
     },
   );
 
