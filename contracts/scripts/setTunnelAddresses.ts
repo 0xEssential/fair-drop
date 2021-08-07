@@ -10,7 +10,7 @@ async function main() {
 
   if (networkName == 'goerli') {
     const NFT = await ethers.getContractAt(abi, address, accounts[0]);
-    await NFT.setFxChildTunnel(childAddress);
+    await NFT.setFxChildTunnel('0x8C7382F9D8f56b33781fE506E897a4F1e2d17255');
   } else {
     const Registration = await ethers.getContractAt(childAbi, childAddress, accounts[0]);
     await Registration.setFxRootTunnel(address);
