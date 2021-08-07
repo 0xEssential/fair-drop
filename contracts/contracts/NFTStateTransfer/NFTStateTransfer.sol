@@ -56,9 +56,9 @@ contract NFTStateTransfer is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, O
     receive() external payable {} // solhint-disable-line no-empty-blocks
 
     /**
-    * @notice Public mint function
+    * @notice Public mint function for eligible minters
     */
-    function mint() public payable {
+    function publicMint() public payable {
         require(approvedMinters[msg.sender], "FD:m:403");
         require(msg.value == mintPrice, "FD:m:402");
         approvedMinters[msg.sender] = false;

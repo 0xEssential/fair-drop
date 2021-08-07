@@ -80,7 +80,7 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
 
         for (uint256 i = 0; i < currentlyEligible.length; i++) {
             registrationStatus[currentlyEligible[i]] = RegistrationStatus.Ineligible;
-            delete currentlyEligible[i];
+            currentlyEligible[i] = address(0); // Null address so we always have a full array to pass to mainnet
         }
 
         uint256 iterations = 0;
