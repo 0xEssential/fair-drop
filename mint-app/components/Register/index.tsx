@@ -7,7 +7,6 @@ import {
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
 import { FairDropRegistration } from '../../typechain';
-_app;
 import { RegistrationStatus } from '../../utils/registrationStatusEnum';
 import Button from '../Button';
 import styles from './styles.module.css';
