@@ -5,10 +5,7 @@ import {
   abi,
   address as smartAddress,
 } from '../../../contracts/deployments/mumbai/FairDropRegistration.json';
-import {
-  FairDropRegistration,
-  FairDropRegistration__factory,
-} from '../../../contracts/typechain';
+import { FairDropRegistration } from '../../../contracts/typechain';
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
 import { RegistrationStatus } from '../../utils/registrationStatusEnum';
