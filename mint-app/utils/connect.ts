@@ -61,7 +61,6 @@ export function initOnboard(subscriptions) {
       { checkName: 'derivationPath' },
       { checkName: 'connect' },
       { checkName: 'accounts' },
-      { checkName: 'network' },
     ],
   });
 }
