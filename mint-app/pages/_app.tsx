@@ -13,7 +13,6 @@ const DefaultLayout = ({ children }) => children;
 import { useRouter } from 'next/dist/client/router';
 
 import Button from '../components/Button';
-import styles from '../styles/Home.module.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const Layout = (Component as any).Layout || DefaultLayout;

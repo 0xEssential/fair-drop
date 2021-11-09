@@ -68,7 +68,7 @@ export default function Mint() {
           <p>
             <strong>Mint Price:</strong> 0.02 ETH
           </p>
-          <Register state={state} />
+          {state && <Register state={state} />}
         </div>
       </div>
     </div>

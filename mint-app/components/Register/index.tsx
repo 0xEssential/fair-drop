@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
+import React, { ReactElement, useContext, useState } from 'react';
 
 import {
   abi,
@@ -26,7 +27,11 @@ const chainArgs = {
   },
 };
 
-export default function Register({ state: { status, mintWindow } }) {
+export default function Register({
+  state: { status, mintWindow },
+}: {
+  state: { status: RegistrationStatus; mintWindow: BigNumber };
+}): ReactElement {
   const [_registering, setRegistering] = useState(false);
 
   const { onboard, provider, network } = useContext(Web3Context);
@@ -83,9 +88,12 @@ export default function Register({ state: { status, mintWindow } }) {
       {mintWindow && (
         <p>
           Check back{' '}
-          {mintWindow && new Date(mintWindow * 1000).toLocaleDateString()} at{' '}
-          {mintWindow && new Date(mintWindow * 1000).toLocaleTimeString()} to
-          see if you won the opportunity to mint
+          {mintWindow &&
+            new Date(mintWindow.toNumber() * 1000).toLocaleDateString()}{' '}
+          at{' '}
+          {mintWindow &&
+            new Date(mintWindow.toNumber() * 1000).toLocaleTimeString()}{' '}
+          to see if you won the opportunity to mint
         </p>
       )}
     </div>
