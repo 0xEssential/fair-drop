@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import useSWR from 'swr';
 
 import {
   abi,
   address as smartAddress,
 } from '../../../contracts/deployments/mumbai/FairDropRegistration.json';
-import { FairDropRegistration } from '../../../contracts/typechain';
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
+import { FairDropRegistration } from '../../typechain';
 import { RegistrationStatus } from '../../utils/registrationStatusEnum';
 import Button from '../Button';
 import styles from './styles.module.css';

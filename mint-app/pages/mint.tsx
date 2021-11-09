@@ -6,11 +6,11 @@ import {
   abi,
   address as registrationAddress,
 } from '../../contracts/deployments/mumbai/FairDropRegistration.json';
-import { FairDropRegistration } from '../../contracts/typechain';
 import Register from '../components/Register';
 import { Web3Context } from '../contexts/web3Context';
 import useContract from '../hooks/useContract';
 import styles from '../styles/Mint.module.css';
+import { FairDropRegistration } from '../typechain';
 import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
 export default function Mint() {
