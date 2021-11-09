@@ -32,15 +32,15 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Provider>
         <Web3ContextProvider>
           <Layout>
-            <div className={styles.container}>
-              <main className={styles.main}>
-                <div className={styles.header}>
-                  <div className={styles.titleContainer}>
-                    <h1 className={styles.title}>
+            <div className="container">
+              <main className="main">
+                <div className="header">
+                  <div className="titleContainer">
+                    <h1 className="title">
                       <em>FairDrop</em> 🎡
                     </h1>
 
-                    <p className={styles.description}>
+                    <p className="description">
                       A proof-of-concept for fair NFT drops
                     </p>
 
@@ -55,7 +55,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                       • Etherscan • Polygonscan
                     </p>
                   </div>
-                  <div className={styles.buttonContainer}>
+                  <div className="buttonContainer">
                     {router.pathname == '/mint' ? (
                       <Link href="/" passHref>
                         <Button>Home</Button>

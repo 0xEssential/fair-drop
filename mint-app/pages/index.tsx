@@ -1,12 +1,8 @@
-import Head from 'next/head';
-import Link from 'next/Link';
 import React from 'react';
-
-import styles from '../styles/Home.module.css';
 
 export default function Home() {
   return (
-    <div className={styles.article}>
+    <div className="article">
       <p>
         At{' '}
         <a href="https://0xessential.com" target="_blank" rel="noreferrer">

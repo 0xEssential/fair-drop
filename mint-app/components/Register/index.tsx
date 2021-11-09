@@ -11,6 +11,7 @@ import {
 } from '../../../contracts/typechain';
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
+import { RegistrationStatus } from '../../utils/registrationStatusEnum';
 import Button from '../Button';
 import styles from './styles.module.css';
 
@@ -29,14 +30,7 @@ const chainArgs = {
   },
 };
 
-enum RegistrationStatus {
-  Unregistered = 'Unregistered',
-  Registered = 'Registered',
-  Eligible = 'Eligible',
-  Ineligible = 'Inelegible',
-}
-
-export default function Register() {
+export default function Register({ state }) {
   const [mintWindow, setWindow] = useState(0);
   const [registering, setRegistering] = useState(false);
 
@@ -44,18 +38,6 @@ export default function Register() {
 
   const isMatic = (_network) => _network && [137, 80001].includes(_network);
   const contract = useContract<FairDropRegistration>(smartAddress, abi);
-
-  const { data: status } = useSWR(
-    isMatic(network) && address ? 'status' : null,
-    async () => {
-      const _status = await contract.registrationStatus(address);
-      return Object.values(RegistrationStatus)[_status];
-    },
-    {
-      refreshInterval: 500,
-      isPaused: () => registering,
-    },
-  );
 
   useEffect(() => {
     if (!contract || !isMatic(network)) return;
@@ -65,7 +47,7 @@ export default function Register() {
     };
 
     getWindow();
-  }, [contract, status, network]);
+  }, [contract, state, network]);
 
   if (!provider) {
     return (
@@ -96,7 +78,7 @@ export default function Register() {
     );
   }
 
-  if (status === RegistrationStatus.Unregistered) {
+  if (state?.status === RegistrationStatus.Unregistered) {
     return (
       <div className={styles.root}>
         <Button
