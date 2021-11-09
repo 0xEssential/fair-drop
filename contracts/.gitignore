@@ -3,6 +3,7 @@ cache/
 artifacts/
 arweave-key.json
 coverage*
+typechain/
 
 .vscode/*
 !.vscode/settings.json.default
