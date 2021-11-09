@@ -57,12 +57,12 @@ function MyApp({ Component, pageProps }: AppProps) {
                   </div>
                   <div className="buttonContainer">
                     {router.pathname == '/mint' ? (
-                      <Link href="/" passHref>
-                        <Button>Home</Button>
-                      </Link>
+                      <Button onClick={() => router.push('/')}>Home</Button>
                     ) : (
                       <Link href="/mint" passHref>
-                        <Button>Try it</Button>
+                        <Button onClick={() => router.push('/mint')}>
+                          Try it
+                        </Button>
                       </Link>
                     )}
                   </div>
