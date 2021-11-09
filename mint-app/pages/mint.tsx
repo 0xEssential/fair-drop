@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import React, { useContext } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
@@ -35,6 +36,11 @@ export default function Mint() {
     {
       // refreshInterval: 500,
       // isPaused: () => registering,
+      initialData: {
+        status: RegistrationStatus.Eligible,
+        mintWindow: BigNumber.from(0),
+        remaining: BigNumber.from(0),
+      },
     },
   );
 

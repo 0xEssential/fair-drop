@@ -24,7 +24,7 @@ const chainArgs = {
   '80001': {
     chainId: '0x13881',
     chainName: 'Mumbai Testnet',
-    rpcUrls: ['https://rpc-mumbai.matic.today/'],
+    rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
     iconUrls: [],
     nativeCurrency: {
       name: 'Matic',
@@ -53,7 +53,11 @@ const SwitchNetworkButton = ({
   return (
     <button
       onClick={async () =>
-        await provider.send('wallet_switchEthereumChain', [chainArgs[chainId]])
+        chainId === process.env.L1_CHAIN_ID
+          ? await provider.send('wallet_switchEthereumChain', [
+              chainArgs[chainId],
+            ])
+          : await provider.send('wallet_addEthereumChain', [chainArgs[chainId]])
       }
       className={classnames(styles.root)}
       disabled={disabled}

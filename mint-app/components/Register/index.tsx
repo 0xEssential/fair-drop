@@ -10,22 +10,8 @@ import useContract from '../../hooks/useContract';
 import { FairDropRegistration } from '../../typechain';
 import { RegistrationStatus } from '../../utils/registrationStatusEnum';
 import Button from '../Button';
+import SwitchNetworkButton from '../SwitchNetworkButton';
 import styles from './styles.module.css';
-
-const chainArgs = {
-  '80001': {
-    chainId: '0x13881',
-    chainName: 'Mumbai Testnet',
-    rpcUrls: ['https://rpc-mumbai.matic.today/'],
-    iconUrls: [],
-    nativeCurrency: {
-      name: 'Matic',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
-    blockExplorerUrls: ['https://mumbai-explorer.matic.today/'],
-  },
-};
 
 export default function Register({
   state: { status, mintWindow },
@@ -56,13 +42,9 @@ export default function Register({
   if (network !== 80001) {
     return (
       <div className={styles.root}>
-        <Button
-          onClick={async () =>
-            await provider.send('wallet_addEthereumChain', [chainArgs['80001']])
-          }
-        >
+        <SwitchNetworkButton chainId={process.env.CHAIN_ID}>
           Switch to Polygon
-        </Button>
+        </SwitchNetworkButton>
       </div>
     );
   }
