@@ -1,7 +1,4 @@
 .root {
-  /* border: 4px dashed #FF748A;
-  border-radius: 12px; */
-  padding: 40px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -9,5 +6,5 @@
 
 .root > img {
   max-width: 33%;
-  margin-right: 2em;
+  margin-right: 3em;
 }

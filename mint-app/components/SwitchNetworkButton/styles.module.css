@@ -1,0 +1,44 @@
+.root {
+  cursor: pointer;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  border: none;
+  background-color: #FF748A;
+  color: white;
+  border-radius: 2px;
+  padding: 10px 40px;
+  transition: all 0.2s linear;
+  text-align: center;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  font-family: 'IBM Plex Mono';
+
+}
+
+.root:hover:not([disabled]) {
+  color: white;
+  transition: all 0.2s linear;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.root[disabled]{
+  cursor: not-allowed;
+}
+
+.secondary{
+  border-color: var(--dark-olive-green);
+  border: solid;
+  border-width: 1px;
+  background-color: white;
+  color: var(--dark-olive-green);
+}
+
+.secondary:hover:not([disabled]) {
+  color: var(--dark-olive-green);
+  transition: all 0.2s linear;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}

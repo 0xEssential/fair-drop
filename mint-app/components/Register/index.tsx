@@ -5,6 +5,10 @@ import {
   abi,
   address as smartAddress,
 } from '../../../contracts/deployments/mumbai/FairDropRegistration.json';
+import {
+  FairDropRegistration,
+  FairDropRegistration__factory,
+} from '../../../contracts/typechain';
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
 import Button from '../Button';
@@ -39,18 +43,17 @@ export default function Register() {
   const { address, onboard, provider, network } = useContext(Web3Context);
 
   const isMatic = (_network) => _network && [137, 80001].includes(_network);
-  const contract = useContract(smartAddress, abi);
+  const contract = useContract<FairDropRegistration>(smartAddress, abi);
 
   const { data: status } = useSWR(
-    isMatic(network) ? 'status' : null,
+    isMatic(network) && address ? 'status' : null,
     async () => {
       const _status = await contract.registrationStatus(address);
       return Object.values(RegistrationStatus)[_status];
     },
     {
       refreshInterval: 500,
-      isPaused: () => !registering,
-      initialData: RegistrationStatus.Unregistered,
+      isPaused: () => registering,
     },
   );
 

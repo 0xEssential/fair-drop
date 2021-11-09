@@ -14,6 +14,7 @@
     "@web3-react/core": "^6.1.9",
     "bnc-notify": "^1.7.0",
     "bnc-onboard": "^1.30.0",
+    "ethers": "^5.5.1",
     "next": "11.0.1",
     "next-auth": "^3.27.3",
     "react": "17.0.2",

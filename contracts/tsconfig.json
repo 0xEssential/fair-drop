@@ -7,7 +7,10 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": ["typechain"],
+    "rootDir": "./"
   },
+
   "include": ["./hardhat.config.ts", "./scripts", "./deploy", "./test"]
 }

@@ -1,9 +1,9 @@
 import 'dotenv/config';
+import '@typechain/hardhat';
 import {HardhatUserConfig} from 'hardhat/types';
 import 'hardhat-deploy';
 import 'hardhat-deploy-ethers';
 import 'hardhat-gas-reporter';
-import '@typechain/hardhat';
 import '@nomiclabs/hardhat-etherscan';
 import 'solidity-coverage';
 import {node_url, accounts} from './utils/network';

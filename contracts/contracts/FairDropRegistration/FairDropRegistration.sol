@@ -4,10 +4,11 @@ pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@maticnetwork/fx-portal/contracts/tunnel/FxBaseChildTunnel.sol";
+
 
 import { Constants } from "../Libraries/Constants.sol";
-import { ContextMixin } from "../Libraries/matic/common/ContextMixin.sol";
-import { FxBaseChildTunnel } from "../Libraries/tunnel/FxBaseChildTunnel.sol";
+
 import { NativeMetaTransaction } from "../Libraries/matic/common/NativeMetaTransaction.sol";
 
 contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFConsumerBase {
@@ -24,7 +25,7 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
 
     mapping (address => RegistrationStatus) public registrationStatus;
     address[] internal registrants;
-    address[] public currentlyEligible;
+    address[5] public currentlyEligible;
     uint256 public remainingMints = Constants.MAX_TOKEN_COUNT;
 
     // Timestamp when next eligible buyers can be selected
@@ -41,7 +42,7 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
         _initializeEIP712("FairDropRegistration");
         keyHash = _keyhash;
         fee = 0.0001 * 10**18;
-        nextWindow = block.timestamp + 5 minutes;
+        nextWindow = block.timestamp + 2 minutes;
     }
 
     /**
@@ -78,23 +79,33 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         require(requestId == randomnessRequestId, "Bad randomness fulfillment");
 
+        pickMinterTranche(randomness);
+
+        _sendMessageToRoot(abi.encode(currentlyEligible));
+    }
+
+    function pickMinterTranche(uint256 randomness) internal {
         for (uint256 i = 0; i < currentlyEligible.length; i++) {
             registrationStatus[currentlyEligible[i]] = RegistrationStatus.Ineligible;
             currentlyEligible[i] = address(0); // Null address so we always have a full array to pass to mainnet
         }
 
         uint256 iterations = 0;
-        while (currentlyEligible.length < Constants.WINDOW_PARTICIPANTS && iterations < registrants.length) {
+        while (iterations < Constants.WINDOW_PARTICIPANTS && iterations < registrants.length) {
             uint256 localPseudoRandom = uint256(keccak256(abi.encode(randomness, block.timestamp)));
             address eligible = registrants[localPseudoRandom % registrants.length];
             if (registrationStatus[eligible] == RegistrationStatus.Registered) {
-                currentlyEligible.push(eligible);
+                currentlyEligible[iterations] = eligible;
                 registrationStatus[eligible] = RegistrationStatus.Eligible;
             }
             iterations += 1;
         }
+    }
 
-        _sendMessageToRoot(abi.encodePacked(currentlyEligible));
+    function claim() public {
+        require (registrationStatus[msg.sender] == RegistrationStatus.Eligible, "401");
+
+        _sendMessageToRoot(abi.encode(msg.sender));
     }
 
     function _processMessageFromRoot(

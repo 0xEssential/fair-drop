@@ -8,15 +8,13 @@ async function main() {
   const accounts = await ethers.getSigners();
   const networkName = process.env.HARDHAT_NETWORK;
 
-  if (networkName == 'goerli') {
+
     const NFT = await ethers.getContractAt(abi, address, accounts[0]);
-    await NFT.setFxChildTunnel(childAddress);
-  } else {
-    const Registration = await ethers.getContractAt(childAbi, childAddress, accounts[0]);
-    await Registration.setFxRootTunnel(address);
-  }
+    const data = await NFT.latestData()
 
-
+    console.warn(data)
+    const approved = await NFT.approvedMinters(accounts[0].address)
+    console.warn(approved)
 
 }
 main()
