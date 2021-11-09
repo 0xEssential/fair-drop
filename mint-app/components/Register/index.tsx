@@ -7,6 +7,7 @@ import {
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
 import { FairDropRegistration } from '../../typechain';
+_app;
 import { RegistrationStatus } from '../../utils/registrationStatusEnum';
 import Button from '../Button';
 import styles from './styles.module.css';
@@ -26,24 +27,12 @@ const chainArgs = {
   },
 };
 
-export default function Register({ state }) {
-  const [mintWindow, setWindow] = useState(0);
-  const [registering, setRegistering] = useState(false);
+export default function Register({ state: { status, mintWindow } }) {
+  const [_registering, setRegistering] = useState(false);
 
-  const { address, onboard, provider, network } = useContext(Web3Context);
+  const { onboard, provider, network } = useContext(Web3Context);
 
-  const isMatic = (_network) => _network && [137, 80001].includes(_network);
   const contract = useContract<FairDropRegistration>(smartAddress, abi);
-
-  useEffect(() => {
-    if (!contract || !isMatic(network)) return;
-    const getWindow = async () => {
-      const _mintWindow = await contract.nextWindow();
-      setWindow(_mintWindow.toNumber());
-    };
-
-    getWindow();
-  }, [contract, state, network]);
 
   if (!provider) {
     return (
@@ -74,7 +63,7 @@ export default function Register({ state }) {
     );
   }
 
-  if (state?.status === RegistrationStatus.Unregistered) {
+  if (status === RegistrationStatus.Unregistered) {
     return (
       <div className={styles.root}>
         <Button
