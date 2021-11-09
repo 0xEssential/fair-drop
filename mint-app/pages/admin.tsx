@@ -12,6 +12,7 @@ import { Web3Context } from '../contexts/web3Context';
 import useContract from '../hooks/useContract';
 import AdminLayout from '../layouts/Admin';
 import styles from '../styles/Home.module.css';
+import { FairDropRegistration } from '../typechain/FairDropRegistration';
 
 const isMatic = (_network) => _network && [137, 80001].includes(_network);
 
@@ -19,7 +20,7 @@ function Admin() {
   const [tx, setTx] = useState('');
   const { network } = useContext(Web3Context);
 
-  const contract = useContract(contractAddress, abi);
+  const contract = useContract<FairDropRegistration>(contractAddress, abi);
 
   const [proof, setProof] = useState();
 
