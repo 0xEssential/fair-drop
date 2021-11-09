@@ -39,22 +39,7 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
       wallet: (wallet) => {
         if (wallet.provider) {
           setWallet(wallet);
-
           const provider = new Web3Provider(wallet.provider, 'any');
-
-          // provider.on('network', (newNetwork, oldNetwork) => {
-          //   console.warn(newNetwork);
-          //   // When a Provider makes its initial connection, it emits a "network"
-          //   // event with a null oldNetwork along with the newNetwork. So, if the
-          //   // oldNetwork exists, it represents a changing network
-          //   if (
-          //     oldNetwork &&
-          //     newNetwork.chainId !== parseInt(process.env.CHAIN_ID, 10)
-          //   ) {
-          //     // signOut();
-          //   }
-          // });
-
           setProvider(provider);
           window.localStorage.setItem('selectedWallet', wallet.name);
         } else {

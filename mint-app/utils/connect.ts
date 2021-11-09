@@ -11,7 +11,6 @@ export function initOnboard(subscriptions) {
     dappId,
     hideBranding: true,
     networkId,
-    networkName: networkId === 80001 ? 'mumbai' : 'matic',
     apiUrl,
     darkMode: true,
     subscriptions,
