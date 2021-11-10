@@ -18,7 +18,7 @@ export default function Mint() {
   );
 
   const { data: state, error } = useSWR(
-    contract ? 'status' + contract.address : null,
+    contract ? 'status-' + address : null,
     async () => {
       const status = address ? await contract.registrationStatus(address) : 0;
       const remaining = await contract.remainingMints();
