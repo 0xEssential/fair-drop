@@ -5,7 +5,7 @@ import React, { ReactElement, useContext } from 'react';
 import { Web3Context } from '../../contexts/web3Context';
 import styles from './styles.module.css';
 
-const chainArgs = {
+export const chainArgs = {
   '5': {
     chainId: '0x5',
   },

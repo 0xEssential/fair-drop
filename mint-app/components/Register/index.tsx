@@ -14,7 +14,7 @@ import {
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
 import { FairDropRegistration, NFTStateTransfer } from '../../typechain';
-import { requiredNetwork } from '../../utils/network';
+import { requiredNetwork, switchNetwork } from '../../utils/network';
 import { RegistrationStatus } from '../../utils/registrationStatusEnum';
 import Button from '../Button';
 import SwitchNetworkButton from '../SwitchNetworkButton';
@@ -130,7 +130,8 @@ export default function Register({
                 claimTx, // txn hash of sendMessageToRoot
                 '0x8c5261668696ce22758910d05bab8f186d6eb247ceac2af2e82c7dc17669b036', // SEND_MESSAGE_EVENT_SIG, do not change
               )
-              .then((_proof) => {
+              .then(async (_proof) => {
+                await switchNetwork(provider, process.env.L1_CHAIN_ID);
                 nftContract.mintWithProof(_proof, {
                   value: utils.parseEther('0.02'),
                 });
