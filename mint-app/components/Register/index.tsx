@@ -20,11 +20,11 @@ export default function Register({
 }): ReactElement {
   const [_registering, setRegistering] = useState(false);
 
-  const { onboard, provider, network } = useContext(Web3Context);
+  const { address, onboard, network } = useContext(Web3Context);
 
   const contract = useContract<FairDropRegistration>(smartAddress, abi);
 
-  if (!provider) {
+  if (!address) {
     return (
       <div className={styles.root}>
         <Button

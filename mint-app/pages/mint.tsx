@@ -1,12 +1,9 @@
 import { BigNumber } from 'ethers';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
 
-import {
-  abi,
-  address as registrationAddress,
-} from '../../contracts/deployments/mumbai/FairDropRegistration.json';
+import fairDropRegistration from '../../contracts/deployments/mumbai/FairDropRegistration.json';
 import Register from '../components/Register';
 import { Web3Context } from '../contexts/web3Context';
 import useContract from '../hooks/useContract';
@@ -15,15 +12,20 @@ import { FairDropRegistration } from '../typechain';
 import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
 export default function Mint() {
-  const { address, network } = useContext(Web3Context);
+  const { address } = useContext(Web3Context);
+  const [loaded, setLoaded] = useState(false);
+  const contract = useContract<FairDropRegistration>(
+    fairDropRegistration.address,
+    fairDropRegistration.abi,
+  );
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
-  const isMatic = (_network) => _network && [137, 80001].includes(_network);
-  const contract = useContract<FairDropRegistration>(registrationAddress, abi);
-
-  const { data: state } = useSWR(
-    isMatic(network) && address ? 'status' : null,
+  const { data: state, error } = useSWR(
+    contract ? 'status' + contract.address : null,
     async () => {
-      const status = await contract.registrationStatus(address);
+      const status = address ? await contract.registrationStatus(address) : 0;
       const remaining = await contract.remainingMints();
       const mintWindow = await contract.nextWindow();
 
@@ -34,15 +36,11 @@ export default function Mint() {
       };
     },
     {
-      // refreshInterval: 500,
-      // isPaused: () => registering,
-      initialData: {
-        status: RegistrationStatus.Eligible,
-        mintWindow: BigNumber.from(0),
-        remaining: BigNumber.from(0),
-      },
+      refreshInterval: 1000,
     },
   );
+
+  console.warn(error);
 
   return (
     <div className="article">

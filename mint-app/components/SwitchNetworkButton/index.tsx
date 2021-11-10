@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers';
 import classnames from 'classnames';
 import CSS from 'csstype';
 import React, { ReactElement, useContext } from 'react';
@@ -24,7 +25,11 @@ const chainArgs = {
   '80001': {
     chainId: '0x13881',
     chainName: 'Mumbai Testnet',
-    rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
+    rpcUrls: [
+      'https://polygon-mumbai.infura.io/v3/69e9744c6cc845a38565011900d04b88',
+      // 'https://rpc-mumbai.matic.today/',
+      // 'https://matic-mumbai.chainstacklabs.com',
+    ],
     iconUrls: [],
     nativeCurrency: {
       name: 'Matic',
@@ -54,10 +59,13 @@ const SwitchNetworkButton = ({
     <button
       onClick={async () =>
         chainId === process.env.L1_CHAIN_ID
-          ? await provider.send('wallet_switchEthereumChain', [
+          ? await (provider as Web3Provider).send(
+              'wallet_switchEthereumChain',
+              [chainArgs[chainId]],
+            )
+          : await (provider as Web3Provider).send('wallet_addEthereumChain', [
               chainArgs[chainId],
             ])
-          : await provider.send('wallet_addEthereumChain', [chainArgs[chainId]])
       }
       className={classnames(styles.root)}
       disabled={disabled}

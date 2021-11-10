@@ -1,4 +1,8 @@
-import { Web3Provider } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  Provider,
+  Web3Provider,
+} from '@ethersproject/providers';
 // import signOut from 'next-auth';
 import React, {
   createContext,
@@ -13,7 +17,7 @@ import { initNotify, initOnboard } from '../utils/connect';
 const defaultValue: {
   onboard?: any;
   address?: string;
-  provider?: Web3Provider;
+  provider?: Provider;
   notify?: { hash: (txHash: string) => void };
   network?: number;
 } = {};
@@ -21,7 +25,7 @@ const defaultValue: {
 const Web3Context = createContext(defaultValue);
 
 const Web3ContextProvider = ({ children }: any): ReactElement => {
-  const [provider, setProvider] = useState(null);
+  const [provider, setProvider] = useState<Provider>();
   const [address, setAddress] = useState(null);
   const [network, setNetwork] = useState(null);
   const [onboard, setOnboard] = useState(null);
@@ -53,24 +57,20 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     setNotify(initNotify());
   }, []);
 
+  // useEffect(() => {
+  //   const previouslySelectedWallet =
+  //     window.localStorage.getItem('selectedWallet');
+
+  //   if (previouslySelectedWallet && onboard) {
+  //     onboard.walletSelect(previouslySelectedWallet);
+  //   }
+  // }, [onboard]);
+
   useEffect(() => {
-    const previouslySelectedWallet =
-      window.localStorage.getItem('selectedWallet');
-
-    if (previouslySelectedWallet && onboard) {
-      onboard.walletSelect(previouslySelectedWallet);
+    if (!provider) {
+      setProvider(new JsonRpcProvider(process.env.MATIC_RPC_URL));
     }
-  }, [onboard]);
-
-  useEffect(() => {
-    if (!addressRef.current) {
-      addressRef.current = address;
-      return;
-    }
-
-    addressRef.current = address;
-    // signOut();
-  }, [address]);
+  }, []);
 
   const value = {
     onboard,
