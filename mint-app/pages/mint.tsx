@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import React, { useContext } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';

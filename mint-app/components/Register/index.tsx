@@ -136,7 +136,7 @@ export default function Register({
                 });
               })
               .catch((e) => {
-                console.warn('no checlpoitn');
+                console.warn(e.message);
               });
           }}
         >
