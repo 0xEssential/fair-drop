@@ -1,7 +1,7 @@
 import Notify from 'bnc-notify';
 import Onboard from 'bnc-onboard';
 
-const networkId = parseInt(process.env.CHAIN_ID, 1);
+const networkId = parseInt(process.env.MATIC_CHAIN_ID, 1);
 const rpcUrl = process.env.RPC_URL;
 const apiUrl = process.env.REACT_APP_API_URL;
 const dappId = '5c501569-1ad1-490d-a7d0-d8a0aba75dad';

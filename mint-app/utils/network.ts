@@ -20,3 +20,8 @@ export const switchNetwork = async (
   chainID: number,
 ): Promise<void> =>
   await provider.send('wallet_addEthereumChain', [chainArgs[chainID]]);
+
+export const requiredNetwork = (
+  chainId: string | number,
+  desiredChainId: string | number,
+): boolean => `${chainId}` === `${desiredChainId}`;

@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import React, { useContext } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
@@ -18,9 +19,12 @@ export default function Mint() {
   );
 
   const { data: state, error } = useSWR(
-    contract ? 'status-' + address : null,
+    contract ? 'status-' + (address || 'json') : null,
     async () => {
-      const status = address ? await contract.registrationStatus(address) : 0;
+      console.warn('feetch', contract);
+      const status = address
+        ? await contract.registrationStatus(address).catch(() => 0)
+        : 0;
       const remaining = await contract.remainingMints();
       const mintWindow = await contract.nextWindow();
 
@@ -35,7 +39,7 @@ export default function Mint() {
     },
   );
 
-  console.warn(error);
+  console.warn(state, error);
 
   return (
     <div className="article">

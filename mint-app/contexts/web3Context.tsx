@@ -1,24 +1,13 @@
-import {
-  BaseProvider,
-  JsonRpcProvider,
-  Provider,
-  Web3Provider,
-} from '@ethersproject/providers';
-// import signOut from 'next-auth';
-import React, {
-  createContext,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import React, { createContext, ReactElement, useEffect, useState } from 'react';
 
 import { initNotify, initOnboard } from '../utils/connect';
 
 const defaultValue: {
   onboard?: any;
   address?: string;
-  provider?: BaseProvider;
+  provider?: Web3Provider;
+  jsonProvider?: JsonRpcProvider;
   notify?: { hash: (txHash: string) => void };
   network?: number;
 } = {};
@@ -26,7 +15,10 @@ const defaultValue: {
 const Web3Context = createContext(defaultValue);
 
 const Web3ContextProvider = ({ children }: any): ReactElement => {
-  const [provider, setProvider] = useState<BaseProvider>();
+  const [provider, setProvider] = useState<Web3Provider>();
+  const [jsonProvider, _setJsonProvider] = useState<JsonRpcProvider>(
+    new JsonRpcProvider(process.env.MATIC_RPC_URL),
+  );
   const [address, setAddress] = useState(null);
   const [network, setNetwork] = useState(null);
   const [onboard, setOnboard] = useState(null);
@@ -66,12 +58,6 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     }
   }, [onboard]);
 
-  useEffect(() => {
-    if (!provider) {
-      setProvider(new JsonRpcProvider(process.env.MATIC_RPC_URL));
-    }
-  }, []);
-
   const value = {
     onboard,
     address,
@@ -79,6 +65,7 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     provider,
     notify,
     network,
+    jsonProvider,
   };
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;

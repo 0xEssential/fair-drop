@@ -10,9 +10,6 @@ export default function usePersonalSign() {
   const { provider, address } = useContext(Web3Context);
 
   return async (message: string) => {
-    return (provider as Web3Provider)?.send('personal_sign', [
-      hexlify(message),
-      address,
-    ]);
+    return provider?.send('personal_sign', [hexlify(message), address]);
   };
 }

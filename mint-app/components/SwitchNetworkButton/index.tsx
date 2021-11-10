@@ -59,13 +59,10 @@ const SwitchNetworkButton = ({
     <button
       onClick={async () =>
         chainId === process.env.L1_CHAIN_ID
-          ? await (provider as Web3Provider).send(
-              'wallet_switchEthereumChain',
-              [chainArgs[chainId]],
-            )
-          : await (provider as Web3Provider).send('wallet_addEthereumChain', [
+          ? await provider.send('wallet_switchEthereumChain', [
               chainArgs[chainId],
             ])
+          : await provider.send('wallet_addEthereumChain', [chainArgs[chainId]])
       }
       className={classnames(styles.root)}
       disabled={disabled}
