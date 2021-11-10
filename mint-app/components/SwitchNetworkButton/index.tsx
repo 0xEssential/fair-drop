@@ -1,4 +1,3 @@
-import { Web3Provider } from '@ethersproject/providers';
 import classnames from 'classnames';
 import CSS from 'csstype';
 import React, { ReactElement, useContext } from 'react';
