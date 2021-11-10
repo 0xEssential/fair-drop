@@ -1,4 +1,5 @@
 import {
+  BaseProvider,
   JsonRpcProvider,
   Provider,
   Web3Provider,
@@ -17,7 +18,7 @@ import { initNotify, initOnboard } from '../utils/connect';
 const defaultValue: {
   onboard?: any;
   address?: string;
-  provider?: Provider;
+  provider?: BaseProvider;
   notify?: { hash: (txHash: string) => void };
   network?: number;
 } = {};
@@ -25,13 +26,12 @@ const defaultValue: {
 const Web3Context = createContext(defaultValue);
 
 const Web3ContextProvider = ({ children }: any): ReactElement => {
-  const [provider, setProvider] = useState<Provider>();
+  const [provider, setProvider] = useState<BaseProvider>();
   const [address, setAddress] = useState(null);
   const [network, setNetwork] = useState(null);
   const [onboard, setOnboard] = useState(null);
   const [notify, setNotify] = useState(null);
   const [wallet, setWallet] = useState({});
-  const addressRef = useRef();
 
   useEffect(() => {
     const onboard = initOnboard({
@@ -57,14 +57,14 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     setNotify(initNotify());
   }, []);
 
-  // useEffect(() => {
-  //   const previouslySelectedWallet =
-  //     window.localStorage.getItem('selectedWallet');
+  useEffect(() => {
+    const previouslySelectedWallet =
+      window.localStorage.getItem('selectedWallet');
 
-  //   if (previouslySelectedWallet && onboard) {
-  //     onboard.walletSelect(previouslySelectedWallet);
-  //   }
-  // }, [onboard]);
+    if (previouslySelectedWallet && onboard) {
+      onboard.walletSelect(previouslySelectedWallet);
+    }
+  }, [onboard]);
 
   useEffect(() => {
     if (!provider) {

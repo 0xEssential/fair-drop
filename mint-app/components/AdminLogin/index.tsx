@@ -1,9 +1,9 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { signIn, signOut, useSession } from 'next-auth/client';
 import React, { useContext } from 'react';
 
 import { Web3Context } from '../../contexts/web3Context';
 import usePersonalSign from '../../hooks/usePersonalSign';
-
 const chainArgs = {
   '80001': {
     chainId: '0x13881',
@@ -42,7 +42,9 @@ export default function AdminLogin() {
     return (
       <button
         onClick={async () => {
-          await provider?.send('wallet_addEthereumChain', [chainArgs['80001']]);
+          await (provider as Web3Provider)?.send('wallet_addEthereumChain', [
+            chainArgs['80001'],
+          ]);
 
           setTimeout(async () => {
             const signedMessage = await signMessage('LOGIN');
