@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import React, { useContext, useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
@@ -13,14 +12,10 @@ import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
 export default function Mint() {
   const { address } = useContext(Web3Context);
-  const [loaded, setLoaded] = useState(false);
   const contract = useContract<FairDropRegistration>(
     fairDropRegistration.address,
     fairDropRegistration.abi,
   );
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
 
   const { data: state, error } = useSWR(
     contract ? 'status' + contract.address : null,

@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { useContext } from 'react';
 
 import { Web3Context } from '../contexts/web3Context';
@@ -9,6 +10,9 @@ export default function usePersonalSign() {
   const { provider, address } = useContext(Web3Context);
 
   return async (message: string) => {
-    return provider?.send('personal_sign', [hexlify(message), address]);
+    return (provider as Web3Provider)?.send('personal_sign', [
+      hexlify(message),
+      address,
+    ]);
   };
 }
