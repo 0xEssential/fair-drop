@@ -28,7 +28,8 @@ export default function Register({
   const [_registering, setRegistering] = useState(false);
   const [claimTx, setClaimTx] = useState<Record<string, any>>();
 
-  const { address, onboard, network, jsonProvider } = useContext(Web3Context);
+  const { address, onboard, network, jsonProvider, provider } =
+    useContext(Web3Context);
 
   const registrationContract = useContract<FairDropRegistration>(
     registrationAddress,
@@ -105,44 +106,43 @@ export default function Register({
   }
 
   if (claimTx) {
-    if (!requiredNetwork(network, process.env.L1_CHAIN_ID)) {
-      return (
-        <SwitchNetworkButton chainId={process.env.L1_CHAIN_ID}>
-          Switch to Mainnet
-        </SwitchNetworkButton>
-      );
-    }
-
     return (
       <div className={styles.root}>
         <p>
-          Please wait for your claim transaction to be checkpointed on Layer 1
+          In about 15 minutes your L2 claim transaction will be checkpointed on
+          L1 and you can mint your NFT.
         </p>
-        <Button
-          onClick={async () => {
-            const client: any = new MaticPOSClient({
-              maticProvider: process.env.MATIC_RPC_URL, // replace if using mainnet
-              parentProvider: process.env.RPC_URL, // replace if using mainnet
-            });
-
-            client.posRootChainManager
-              .customPayload(
-                claimTx, // txn hash of sendMessageToRoot
-                '0x8c5261668696ce22758910d05bab8f186d6eb247ceac2af2e82c7dc17669b036', // SEND_MESSAGE_EVENT_SIG, do not change
-              )
-              .then(async (_proof) => {
-                await switchNetwork(provider, process.env.L1_CHAIN_ID);
-                nftContract.mintWithProof(_proof, {
-                  value: utils.parseEther('0.02'),
-                });
-              })
-              .catch((e) => {
-                console.warn(e.message);
+        {requiredNetwork(network, process.env.L1_CHAIN_ID) ? (
+          <Button
+            onClick={async () => {
+              const client: any = new MaticPOSClient({
+                maticProvider: process.env.MATIC_RPC_URL, // replace if using mainnet
+                parentProvider: process.env.RPC_URL, // replace if using mainnet
               });
-          }}
-        >
-          Mint NFT
-        </Button>
+
+              client.posRootChainManager
+                .customPayload(
+                  claimTx.hash, // txn hash of sendMessageToRoot
+                  '0x8c5261668696ce22758910d05bab8f186d6eb247ceac2af2e82c7dc17669b036', // SEND_MESSAGE_EVENT_SIG, do not change
+                )
+                .then(async (_proof) => {
+                  // await switchNetwork(provider, process.env.L1_CHAIN_ID);
+                  nftContract.mintWithProof(_proof, {
+                    value: utils.parseEther('0.02'),
+                  });
+                })
+                .catch((e) => {
+                  console.warn(e.message);
+                });
+            }}
+          >
+            Mint NFT
+          </Button>
+        ) : (
+          <SwitchNetworkButton chainId={process.env.L1_CHAIN_ID}>
+            Switch to Mainnet
+          </SwitchNetworkButton>
+        )}
       </div>
     );
   }
@@ -162,7 +162,7 @@ export default function Register({
         </p>
       )}
       <p>Minting is a multi-step process that takes about 15 minutes.</p>
-      <p>First, claim your mint pass proof</p>
+      <p>First, claim your mint pass with a Polygon transaction</p>
       {!requiredNetwork(network, process.env.MATIC_CHAIN_ID) ? (
         <SwitchNetworkButton chainId={process.env.MATIC_CHAIN_ID}>
           Switch to Polygon

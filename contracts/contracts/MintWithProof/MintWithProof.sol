@@ -2,8 +2,9 @@
 pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@maticnetwork/fx-portal/contracts/tunnel/FxBaseRootTunnel.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 import { Constants } from "../Libraries/Constants.sol";
 
@@ -13,7 +14,10 @@ import { Constants } from "../Libraries/Constants.sol";
  * @dev This contract should be deployed to Ethereum mainnet and is the ERC721 contract for your NFT.
  */
 
-contract MintWithProof is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, Ownable {
+contract MintWithProof is ERC721, FxBaseRootTunnel, Ownable {
+    using Counters for Counters.Counter;
+
+    Counters.Counter private _tokenIdTracker;
     uint256 public mintPrice = 0.1 ether;
     uint256 public remainingTokens = Constants.MAX_TOKEN_COUNT;
     mapping(address => bool) internal exhaustedMinters;
@@ -23,12 +27,15 @@ contract MintWithProof is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, Owna
         address _fxRoot
     )
     FxBaseRootTunnel(_checkpointManager, _fxRoot)
-    ERC721PresetMinterPauserAutoId(
+    ERC721(
         "0xEssential FairDrop",
-        "FAIRDROP",
-        "ipfs://bafybeicoe6oe2yoeubcpljqqec3vul4n4l7zz7adgrjegijlw3ndx34vce/"
+        "FAIRDROP"
     )
     {} // solhint-disable-line no-empty-blocks
+
+    function _baseURI() internal view override returns (string memory) {
+        return "ipfs://bafybeicoe6oe2yoeubcpljqqec3vul4n4l7zz7adgrjegijlw3ndx34vce/";
+    }
 
     /**
     * @notice Mint token with L2 proof
@@ -48,7 +55,8 @@ contract MintWithProof is ERC721PresetMinterPauserAutoId, FxBaseRootTunnel, Owna
         address minter = abi.decode(message, (address));
         require(minter == msg.sender, "FD:mWP:401");
 
-        mint(msg.sender);
+        _mint(minter, _tokenIdTracker.current());
+        _tokenIdTracker.increment();
         remainingTokens -= 1;
         _sendMessageToChild(abi.encodePacked(remainingTokens));
 

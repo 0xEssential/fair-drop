@@ -6,12 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 import "@maticnetwork/fx-portal/contracts/tunnel/FxBaseChildTunnel.sol";
 
-
 import { Constants } from "../Libraries/Constants.sol";
 
-import { NativeMetaTransaction } from "../Libraries/matic/common/NativeMetaTransaction.sol";
-
-contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFConsumerBase {
+contract FairDropRegistration is FxBaseChildTunnel, VRFConsumerBase {
     bytes32 internal keyHash;
     uint256 internal fee;
     bytes32 internal randomnessRequestId;
@@ -80,8 +77,6 @@ contract FairDropRegistration is NativeMetaTransaction, FxBaseChildTunnel, VRFCo
         require(requestId == randomnessRequestId, "Bad randomness fulfillment");
 
         pickMinterTranche(randomness);
-
-        _sendMessageToRoot(abi.encode(currentlyEligible));
     }
 
     function pickMinterTranche(uint256 randomness) internal {
