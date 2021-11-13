@@ -78,17 +78,18 @@ export default function Home() {
           and pumping gas is not the best way to decide who gets an NFT.
         </li>
         <li>
-          <strong>Decentralized and Trustless</strong> - we should not be asking
-          users to register with email, or using a centralized database and
-          webserver to manage who can buy what.
+          <strong>Decentralized and Trustless</strong> - we should strive not to
+          use a centralized database or webserver to manage who can buy what,
+          but recognize the tradeoff between centralization and
+          Sybil-resistance.
         </li>
       </ul>
 
       <p>
         We took all of those requirements and built a system that uses raffles
         with a <em>right to buy</em> reward. Random winners get to mint NFTs at
-        a fair floor price, wherever they are in the world, whether they&apos;re
-        influencers, etherscan minters, bot makers, or MEV manipulators.
+        a fair floor price, wherever they are in the world, without needing to
+        submit transactions with exorbitant gas fees.
         <br />
       </p>
       <hr />
@@ -101,7 +102,8 @@ export default function Home() {
         users know they have a fair chance to mint. An NFT developer can choose
         any number of approaches for registration - we provide some examples for
         using a metatransaction for registration, allowing the project to
-        implement some KYC to be more Sybil-resistant.
+        implement some KYC to be more Sybil-resistant. Project developers can
+        also bulk-add addresses they collect off-chain.
       </p>
 
       <h2>2. Raffle</h2>
@@ -111,9 +113,7 @@ export default function Home() {
         random list of eligible minters. These addresses can each mint{' '}
         <em>n</em> tokens, where <em>n x minters</em> is equal to available
         tokens. Each eligible user can perform an L2 transaction to be
-        checkpointed on L1 by the Polygon CheckpointManager contract. The user
-        can then generate a proof in a dApp and submit the proof as a &quot;mint
-        pass&quot; to the L1 contract.
+        checkpointed on L1 by the Polygon CheckpointManager contract.
       </p>
 
       <h2>3. Redeem</h2>
@@ -123,6 +123,9 @@ export default function Home() {
         on Ethereum mainnet without the need for gas wars or staying up all
         night to catch a drop. The minting flow takes a little bit of time as
         the user must wait for their claim transaction to be checkpointed on L1.
+        Once the transaction is checkpointed, the user can then generate a proof
+        in a dApp and submit the proof as a &quot;mint pass&quot; to the L1
+        contract.
       </p>
 
       <h2>4. Repeat</h2>
@@ -144,20 +147,20 @@ export default function Home() {
       </p>
       <p>
         One issue with this approach is that it does not prevent bots from
-        signing up thousands of addresses. Since registration is cheap in tx
-        cost and onchain, there is not a great way to prevent this. We could
-        require at least a small payment for registration, which might help, but
-        adds complexity and might not be accepted by users. It is true that the
-        bot owner would need to check each of their registered addresses for
-        eligibility, and purchase through eligible addresses, but this can be
-        done pretty easily too, and captchas or other web-based tools of course
-        cannot prevent interacting with the contracts directly. In some ways we
-        are forced to choose between decentralization and fairness. Parallel
-        used email registration with a centralized server - this makes it a lot
-        easier to prevent bots, but also introduces trust and the potential of
-        censorship. We do offer one approach where registration is still
-        on-chain, but performed in a meta-transaction on behalf of an address
-        after some KYC.
+        signing up thousands of addresses. We could require at least a small
+        payment for registration, which might help, but adds complexity and
+        might not be accepted by users. It is true that the bot owner would need
+        to check each of their registered addresses for eligibility, and
+        purchase through eligible addresses, but this can be done pretty easily
+        too, and captchas or other web-based tools of course cannot prevent
+        interacting with the contracts directly. In some ways we are forced to
+        choose between decentralization and fairness. Parallel used email
+        registration with a centralized server - this makes it a lot easier to
+        prevent bots, but also introduces trust and the potential of censorship.
+        We do offer one approach where registration is still on-chain, but
+        performed in a meta-transaction on behalf of an address after some KYC.
+        In our demo we use Discord authentication to at least add some assurance
+        we are not allowing individuals to register multiple times.
       </p>
       <p>
         We don&apos;t have all of the answers but hope to kick off a
