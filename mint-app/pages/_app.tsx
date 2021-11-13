@@ -3,7 +3,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Provider } from 'next-auth/client';
+import { SessionProvider } from 'next-auth/react';
 import React from 'react';
 
 import Web3ContextProvider from '../contexts/web3Context';
@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           rel="stylesheet"
         />
       </Head>
-      <Provider>
+      <SessionProvider>
         <Web3ContextProvider>
           <Layout>
             <div className="container">
@@ -71,7 +71,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             </div>
           </Layout>
         </Web3ContextProvider>
-      </Provider>
+      </SessionProvider>
     </>
   );
 }

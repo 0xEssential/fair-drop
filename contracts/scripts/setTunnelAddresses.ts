@@ -2,7 +2,7 @@ import 'dotenv/config';
 import {ethers} from 'hardhat';
 import '@nomiclabs/hardhat-ethers';
 import {address as childAddress, abi as childAbi} from '../deployments/mumbai/FairDropRegistration.json';
-import {address, abi} from '../deployments/goerli/NFTStateTransfer.json';
+import {address, abi} from '../deployments/goerli/MintWithProof.json';
 
 async function main() {
   const accounts = await ethers.getSigners();

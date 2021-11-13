@@ -1,16 +1,18 @@
-import React, { useContext } from 'react';
+import React, { ReactElement, useContext } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
 
 import fairDropRegistration from '../../contracts/deployments/mumbai/FairDropRegistration.json';
+import MintFlow from '../components/MintFlow';
 import Register from '../components/Register';
+import RegisterKYC from '../components/RegisterKYC';
 import { Web3Context } from '../contexts/web3Context';
 import useContract from '../hooks/useContract';
 import styles from '../styles/Mint.module.css';
 import { FairDropRegistration } from '../typechain';
 import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
-export default function Mint() {
+export default function Mint(): ReactElement {
   const { address } = useContext(Web3Context);
   const contract = useContract<FairDropRegistration>(
     fairDropRegistration.address,
@@ -20,7 +22,6 @@ export default function Mint() {
   const { data: state, error } = useSWR(
     contract ? 'status-' + (address || 'json') : null,
     async () => {
-      console.warn('feetch', contract);
       const status = address
         ? await contract.registrationStatus(address).catch(() => 0)
         : 0;
@@ -34,7 +35,7 @@ export default function Mint() {
       };
     },
     {
-      refreshInterval: 1000,
+      // refreshInterval: 1000,
     },
   );
 
@@ -70,7 +71,34 @@ export default function Mint() {
           <p>
             <strong>Mint Price:</strong> 0.02 ETH
           </p>
-          {state && <Register state={state} />}
+          {state?.status === RegistrationStatus.Unregistered && <Register />}
+          {state?.status === RegistrationStatus.Unregistered && <RegisterKYC />}
+
+          {state?.status === RegistrationStatus.Registered && (
+            <p>
+              You&apos;re registered for the drop - check back to see if you won
+              the ability to mint in{' '}
+              <Countdown
+                date={state?.mintWindow?.toNumber() * 1000}
+                renderer={({ hours, minutes }) => (
+                  <span>
+                    {hours} hours, {minutes} minutes
+                  </span>
+                )}
+              />
+            </p>
+          )}
+          {state?.status === RegistrationStatus.Eligible && (
+            <MintFlow state={state} />
+          )}
+
+          {state?.status === RegistrationStatus.Ineligible && (
+            <p>
+              You didn&apos;t win the raffle this time - check back in
+              <br />
+              <Countdown date={state?.mintWindow?.toNumber() * 1000} />
+            </p>
+          )}
         </div>
       </div>
     </div>

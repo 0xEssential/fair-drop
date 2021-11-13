@@ -1,4 +1,4 @@
-import Notify from 'bnc-notify';
+import Notify, { API } from 'bnc-notify';
 import Onboard from 'bnc-onboard';
 
 const networkId = parseInt(process.env.MATIC_CHAIN_ID, 1);
@@ -19,7 +19,7 @@ export function initOnboard(subscriptions) {
         { walletName: 'metamask' },
         {
           walletName: 'trezor',
-          appUrl: 'https://arena.wrassling.com',
+          appUrl: 'https://fairdrop.0xessential.com',
           rpcUrl,
         },
         {
@@ -30,10 +30,10 @@ export function initOnboard(subscriptions) {
           walletName: 'walletConnect',
           infuraKey: process.env.INFURA_KEY,
         },
-        { walletName: 'cobovault', appName: 'Wrassling', rpcUrl },
+        { walletName: 'cobovault', appName: 'FairDrop', rpcUrl },
         {
           walletName: 'lattice',
-          appName: 'Onboard Demo',
+          appName: 'FairDrop',
           rpcUrl,
         },
         { walletName: 'coinbase' },
@@ -65,7 +65,7 @@ export function initOnboard(subscriptions) {
   });
 }
 
-export function initNotify() {
+export function initNotify(): API {
   return Notify({
     dappId,
     networkId,

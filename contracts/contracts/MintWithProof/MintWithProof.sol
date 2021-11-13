@@ -58,7 +58,7 @@ contract MintWithProof is ERC721, FxBaseRootTunnel, Ownable {
         _mint(minter, _tokenIdTracker.current());
         _tokenIdTracker.increment();
         remainingTokens -= 1;
-        _sendMessageToChild(abi.encodePacked(remainingTokens));
+        _sendMessageToChild(abi.encodePacked(remainingTokens, msg.sender));
 
         exhaustedMinters[msg.sender] = true;
     }
@@ -80,13 +80,13 @@ contract MintWithProof is ERC721, FxBaseRootTunnel, Ownable {
     * @notice no-op override
     * @param inputData proof generated for transaction - see https://docs.matic.network/docs/develop/l1-l2-communication/state-transfer
     */
-    function receiveMessage(bytes memory inputData) public override onlyOwner {}
+    function receiveMessage(bytes memory inputData) public override onlyOwner {} // solhint-disable-line no-empty-blocks
 
     /**
     * @notice no-op override
     * @param data bytes
     */
-    function _processMessageFromChild(bytes memory data) internal override {}
+    function _processMessageFromChild(bytes memory data) internal override {} // solhint-disable-line no-empty-blocks
 
     receive() external payable {} // solhint-disable-line no-empty-blocks
 }

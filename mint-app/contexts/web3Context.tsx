@@ -1,5 +1,12 @@
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
-import React, { createContext, ReactElement, useEffect, useState } from 'react';
+import { signOut } from 'next-auth/react';
+import React, {
+  createContext,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { initNotify, initOnboard } from '../utils/connect';
 
@@ -25,13 +32,12 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
   const [notify, setNotify] = useState(null);
   const [wallet, setWallet] = useState({});
 
+  const addressRef = useRef();
+
   useEffect(() => {
     const onboard = initOnboard({
       address: setAddress,
-      network: (network) => {
-        console.warn('SETTING NETWORK', network);
-        setNetwork(network);
-      },
+      network: setNetwork,
       wallet: (wallet) => {
         if (wallet.provider) {
           setWallet(wallet);
@@ -57,6 +63,16 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
       onboard.walletSelect(previouslySelectedWallet);
     }
   }, [onboard]);
+
+  useEffect(() => {
+    if (!addressRef.current) {
+      addressRef.current = address;
+      return;
+    }
+
+    addressRef.current = address;
+    signOut();
+  }, [address]);
 
   const value = {
     onboard,

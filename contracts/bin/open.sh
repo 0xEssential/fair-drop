@@ -9,9 +9,12 @@ if [[ $NETWORK == 'mainnet' ]]
 then
   echo "PRODUCTION"
 else
-  ADDRESS=`jq -r '.address' ./deployments/goerli/NFTStateTransfer.json`
+  ADDRESS=`jq -r '.address' ./deployments/goerli/MintWithProof.json`
   open https://goerli.etherscan.io/address/${ADDRESS}
 
   MUMBAI_ADDRESS=`jq -r '.address' ./deployments/mumbai/FairDropRegistration.json`
+  open https://mumbai.polygonscan.com/address/${MUMBAI_ADDRESS}
+
+  MUMBAI_ADDRESS=`jq -r '.address' ./deployments/mumbai/FairDropGasStation.json`
   open https://mumbai.polygonscan.com/address/${MUMBAI_ADDRESS}
 fi

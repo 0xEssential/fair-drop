@@ -15,28 +15,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   if (!networkName) return;
 
-  console.warn(networkName);
   const {deployer} = await getNamedAccounts();
 
-  const { vrfCoordinator, linkToken, keyhash } = chainlinkEnv(networkName);
-
-  const {
-    address: gasStationAddress,
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-  } = require(`../deployments/${networkName}/FairDropGasStation.json`);
-
-
-  await deploy('FairDropRegistration', {
-    args: [
-      vrfCoordinator,
-      linkToken,
-      keyhash,
-      process.env[networkName.toUpperCase() + '_FX_CHILD'],
-      gasStationAddress
-    ],
+  await deploy('FairDropGasStation', {
     from: deployer,
     log: true,
   });
 };
 export default func;
-func.tags = ['FairDropRegistration'];
+func.tags = ['FairDropGasStation'];

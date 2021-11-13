@@ -12,7 +12,6 @@ import {
   BaseContract,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -27,37 +26,34 @@ import type {
 
 export interface FairDropRegistrationInterface extends ethers.utils.Interface {
   functions: {
-    "ERC712_VERSION()": FunctionFragment;
+    "adminBulkRegisterForDrop(address[])": FunctionFragment;
     "claim()": FunctionFragment;
     "currentlyEligible(uint256)": FunctionFragment;
-    "executeMetaTransaction(address,bytes,bytes32,bytes32,uint8)": FunctionFragment;
     "fxChild()": FunctionFragment;
     "fxRootTunnel()": FunctionFragment;
-    "getChainId()": FunctionFragment;
-    "getDomainSeperator()": FunctionFragment;
-    "getNonce(address)": FunctionFragment;
+    "isTrustedForwarder(address)": FunctionFragment;
+    "kycRegisterForDrop()": FunctionFragment;
     "nextWindow()": FunctionFragment;
+    "owner()": FunctionFragment;
     "processMessageFromRoot(uint256,address,bytes)": FunctionFragment;
     "rawFulfillRandomness(bytes32,uint256)": FunctionFragment;
     "registerForDrop()": FunctionFragment;
     "registrationStatus(address)": FunctionFragment;
     "remainingMints()": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "selectEligibleBuyers()": FunctionFragment;
     "setFxRootTunnel(address)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "ERC712_VERSION",
-    values?: undefined
+    functionFragment: "adminBulkRegisterForDrop",
+    values: [string[]]
   ): string;
   encodeFunctionData(functionFragment: "claim", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "currentlyEligible",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "executeMetaTransaction",
-    values: [string, BytesLike, BytesLike, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "fxChild", values?: undefined): string;
   encodeFunctionData(
@@ -65,18 +61,18 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getChainId",
-    values?: undefined
+    functionFragment: "isTrustedForwarder",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getDomainSeperator",
+    functionFragment: "kycRegisterForDrop",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
     functionFragment: "nextWindow",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "processMessageFromRoot",
     values: [BigNumberish, string, BytesLike]
@@ -98,6 +94,10 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "selectEligibleBuyers",
     values?: undefined
   ): string;
@@ -105,9 +105,13 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     functionFragment: "setFxRootTunnel",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(
-    functionFragment: "ERC712_VERSION",
+    functionFragment: "adminBulkRegisterForDrop",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
@@ -115,22 +119,21 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     functionFragment: "currentlyEligible",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "executeMetaTransaction",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "fxChild", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "fxRootTunnel",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getChainId", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getDomainSeperator",
+    functionFragment: "isTrustedForwarder",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "kycRegisterForDrop",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "nextWindow", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "processMessageFromRoot",
     data: BytesLike
@@ -152,6 +155,10 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "selectEligibleBuyers",
     data: BytesLike
   ): Result;
@@ -159,27 +166,31 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     functionFragment: "setFxRootTunnel",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
   events: {
     "MessageSent(bytes)": EventFragment;
-    "MetaTransactionExecuted(address,address,bytes)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "MessageSent"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MetaTransactionExecuted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
 export type MessageSentEvent = TypedEvent<[string], { message: string }>;
 
 export type MessageSentEventFilter = TypedEventFilter<MessageSentEvent>;
 
-export type MetaTransactionExecutedEvent = TypedEvent<
-  [string, string, string],
-  { userAddress: string; relayerAddress: string; functionSignature: string }
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
 >;
 
-export type MetaTransactionExecutedEventFilter =
-  TypedEventFilter<MetaTransactionExecutedEvent>;
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface FairDropRegistration extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -208,7 +219,10 @@ export interface FairDropRegistration extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    ERC712_VERSION(overrides?: CallOverrides): Promise<[string]>;
+    adminBulkRegisterForDrop(
+      addresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     claim(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -219,29 +233,22 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    executeMetaTransaction(
-      userAddress: string,
-      functionSignature: BytesLike,
-      sigR: BytesLike,
-      sigS: BytesLike,
-      sigV: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     fxChild(overrides?: CallOverrides): Promise<[string]>;
 
     fxRootTunnel(overrides?: CallOverrides): Promise<[string]>;
 
-    getChainId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getDomainSeperator(overrides?: CallOverrides): Promise<[string]>;
-
-    getNonce(
-      user: string,
+    isTrustedForwarder(
+      forwarder: string,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { nonce: BigNumber }>;
+    ): Promise<[boolean]>;
+
+    kycRegisterForDrop(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     nextWindow(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
 
     processMessageFromRoot(
       stateId: BigNumberish,
@@ -267,6 +274,10 @@ export interface FairDropRegistration extends BaseContract {
 
     remainingMints(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     selectEligibleBuyers(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -275,9 +286,17 @@ export interface FairDropRegistration extends BaseContract {
       _fxRootTunnel: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
-  ERC712_VERSION(overrides?: CallOverrides): Promise<string>;
+  adminBulkRegisterForDrop(
+    addresses: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   claim(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -288,26 +307,22 @@ export interface FairDropRegistration extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  executeMetaTransaction(
-    userAddress: string,
-    functionSignature: BytesLike,
-    sigR: BytesLike,
-    sigS: BytesLike,
-    sigV: BigNumberish,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   fxChild(overrides?: CallOverrides): Promise<string>;
 
   fxRootTunnel(overrides?: CallOverrides): Promise<string>;
 
-  getChainId(overrides?: CallOverrides): Promise<BigNumber>;
+  isTrustedForwarder(
+    forwarder: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
-  getDomainSeperator(overrides?: CallOverrides): Promise<string>;
-
-  getNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+  kycRegisterForDrop(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   nextWindow(overrides?: CallOverrides): Promise<BigNumber>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
 
   processMessageFromRoot(
     stateId: BigNumberish,
@@ -330,6 +345,10 @@ export interface FairDropRegistration extends BaseContract {
 
   remainingMints(overrides?: CallOverrides): Promise<BigNumber>;
 
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   selectEligibleBuyers(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -339,8 +358,16 @@ export interface FairDropRegistration extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  transferOwnership(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
-    ERC712_VERSION(overrides?: CallOverrides): Promise<string>;
+    adminBulkRegisterForDrop(
+      addresses: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     claim(overrides?: CallOverrides): Promise<void>;
 
@@ -349,26 +376,20 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    executeMetaTransaction(
-      userAddress: string,
-      functionSignature: BytesLike,
-      sigR: BytesLike,
-      sigS: BytesLike,
-      sigV: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     fxChild(overrides?: CallOverrides): Promise<string>;
 
     fxRootTunnel(overrides?: CallOverrides): Promise<string>;
 
-    getChainId(overrides?: CallOverrides): Promise<BigNumber>;
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
-    getDomainSeperator(overrides?: CallOverrides): Promise<string>;
-
-    getNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+    kycRegisterForDrop(overrides?: CallOverrides): Promise<void>;
 
     nextWindow(overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
 
     processMessageFromRoot(
       stateId: BigNumberish,
@@ -392,10 +413,17 @@ export interface FairDropRegistration extends BaseContract {
 
     remainingMints(overrides?: CallOverrides): Promise<BigNumber>;
 
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
     selectEligibleBuyers(overrides?: CallOverrides): Promise<void>;
 
     setFxRootTunnel(
       _fxRootTunnel: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -404,20 +432,21 @@ export interface FairDropRegistration extends BaseContract {
     "MessageSent(bytes)"(message?: null): MessageSentEventFilter;
     MessageSent(message?: null): MessageSentEventFilter;
 
-    "MetaTransactionExecuted(address,address,bytes)"(
-      userAddress?: null,
-      relayerAddress?: null,
-      functionSignature?: null
-    ): MetaTransactionExecutedEventFilter;
-    MetaTransactionExecuted(
-      userAddress?: null,
-      relayerAddress?: null,
-      functionSignature?: null
-    ): MetaTransactionExecutedEventFilter;
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
   };
 
   estimateGas: {
-    ERC712_VERSION(overrides?: CallOverrides): Promise<BigNumber>;
+    adminBulkRegisterForDrop(
+      addresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     claim(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -428,26 +457,22 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    executeMetaTransaction(
-      userAddress: string,
-      functionSignature: BytesLike,
-      sigR: BytesLike,
-      sigS: BytesLike,
-      sigV: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     fxChild(overrides?: CallOverrides): Promise<BigNumber>;
 
     fxRootTunnel(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getChainId(overrides?: CallOverrides): Promise<BigNumber>;
+    isTrustedForwarder(
+      forwarder: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    getDomainSeperator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+    kycRegisterForDrop(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     nextWindow(overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     processMessageFromRoot(
       stateId: BigNumberish,
@@ -473,6 +498,10 @@ export interface FairDropRegistration extends BaseContract {
 
     remainingMints(overrides?: CallOverrides): Promise<BigNumber>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     selectEligibleBuyers(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -481,10 +510,18 @@ export interface FairDropRegistration extends BaseContract {
       _fxRootTunnel: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    ERC712_VERSION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    adminBulkRegisterForDrop(
+      addresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     claim(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -495,31 +532,22 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    executeMetaTransaction(
-      userAddress: string,
-      functionSignature: BytesLike,
-      sigR: BytesLike,
-      sigS: BytesLike,
-      sigV: BigNumberish,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     fxChild(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     fxRootTunnel(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getChainId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getDomainSeperator(
+    isTrustedForwarder(
+      forwarder: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getNonce(
-      user: string,
-      overrides?: CallOverrides
+    kycRegisterForDrop(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     nextWindow(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     processMessageFromRoot(
       stateId: BigNumberish,
@@ -545,12 +573,21 @@ export interface FairDropRegistration extends BaseContract {
 
     remainingMints(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     selectEligibleBuyers(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setFxRootTunnel(
       _fxRootTunnel: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
