@@ -125,11 +125,14 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
 
 
     /**
-    * @notice Callback function used by VRF Coordinator
-    * @dev Chainlink VRF is inexpensive enough on Polygon to use it for
-    * trustless, fair and on-chain drops. When the contract receives a
-    * random number from VRF, we select n WINDOW_PARTICIPANTS who are
-    * newly eligible to mint.
+    * @notice Get mint eligibility for the calling address
+    * @dev We treat an NFT drop as TOKEN_SUPPLY raffles,
+    * where we divide the total registrants by remaining tokens
+    * to create raffle groups. Using Chainlinkn VRF, we find an
+    * index offset for a raffle group, and use that same index
+    * across all groups. If 100 addresses register for 5 tokens,
+    * we might generate an index offset of 8. Addresses at indices
+    * 8, 28, 48, 68 and 88 would then be eligible to mint.
     */
     function eligible() public view returns (bool) {
         if (_undersubscribed()) return true;
