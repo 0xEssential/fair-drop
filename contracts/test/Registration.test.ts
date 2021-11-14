@@ -1,24 +1,23 @@
 import chai, {expect} from './chai-setup';
-import {ethers, deployments, getUnnamedAccounts} from 'hardhat';
+import {ethers, deployments} from 'hardhat';
 import {
   deployContracts,
   setupUser,
   setupUsers,
 } from './utils';
-import { Contract, ContractFactory } from 'ethers';
+import { BigNumber } from 'ethers';
 
-import {FairDropRegistration, FairDropRegistration__factory, VRFCoordinatorMock} from '../typechain'
-import { FairDropRegistrationInterface } from '../typechain/FairDropRegistration';
-import { SignerWithAddress } from 'hardhat-deploy-ethers/dist/src/signers';
+import {FairDropRegistration } from '../typechain'
 
 describe('Drop Registration', function () {
   const setup = deployments.createFixture(async () => {
     const signers = await ethers.getSigners()
-    const owner = signers.shift();
+    const _owner = signers.shift();
 
-    const contracts = await deployContracts(owner);
+    const contracts = await deployContracts(_owner);
 
     const users = await setupUsers(signers, contracts);
+    const owner = await setupUser(_owner, contracts);
 
     return {
       ...contracts,
@@ -33,7 +32,7 @@ describe('Drop Registration', function () {
   }
 
   let fixtures: {
-    owner: SignerWithAddress;
+    owner: ContractUser;
     users: ContractUser[];
   };
 
@@ -55,23 +54,31 @@ describe('Drop Registration', function () {
         expect(registered).to.be.ok;
     });
 
-    it('picks eligible minters', async () => {
+    it('picks eligible minters for seed', async () => {
       const {
         users,
+        owner
       } = fixtures;
-
-        await users[0].FairDropRegistration.pickMinterTranche(
-          345235235
+        const tx = await owner.FairDropRegistration.adminBulkRegisterForDrop(
+          users.map((u) => u.address)
         )
+        await tx.wait();
 
-        const eligible = [];
-        eligible.push(await users[0].FairDropRegistration.currentlyEligible(0));
-        eligible.push(await users[1].FairDropRegistration.currentlyEligible(0));
-        eligible.push(await users[2].FairDropRegistration.currentlyEligible(0));
-        eligible.push(await users[3].FairDropRegistration.currentlyEligible(0));
-        eligible.push(await users[4].FairDropRegistration.currentlyEligible(0));
+        const winnersCount = await users[0].FairDropRegistration.remainingMints();
+        const seed = BigNumber.from(Math.floor(Math.random() * 1000));
+        const slice = Math.floor(users.length / winnersCount.toNumber());
+        const start = seed.mod(slice);
 
-        expect(eligible).to.include(users[0].address);
+        const status = await  users[start.toNumber()].FairDropRegistration.eligible(seed);
+        const status2 = await users[start.add(slice).toNumber()].FairDropRegistration.eligible(seed);
+        const status3 = await users[start.add(slice * 2).toNumber()].FairDropRegistration.eligible(seed);
+        const status4 = await users[start.add(slice * 3).toNumber()].FairDropRegistration.eligible(seed);
+        const status5 = await users[start.add(slice * 4).toNumber()].FairDropRegistration.eligible(seed);
+
+        console.warn(status, status2, status3, status4, status5)
+        expect(status).to.eq(true);
+        expect(status2).to.eq(true);
+
     });
   });
 });

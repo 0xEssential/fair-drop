@@ -4,26 +4,29 @@ pragma solidity >=0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 import "@maticnetwork/fx-portal/contracts/tunnel/FxBaseChildTunnel.sol";
 
 import { Constants } from "../Libraries/Constants.sol";
 
 contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ERC2771Context {
+    using Counters for Counters.Counter;
+
     bytes32 internal keyHash;
     uint256 internal fee;
     bytes32 internal randomnessRequestId;
 
-    enum RegistrationStatus {
-        Unregistered,
-        Registered,
-        Eligible,
-        Ineligible
+    struct MintWindow {
+        uint256 registrationsCount;
+        uint256 remainingMints;
+        uint256 seed;
     }
 
-    mapping (address => RegistrationStatus) public registrationStatus;
-    address[] internal registrants;
-    address[5] public currentlyEligible;
+    mapping (address => uint256) internal registrationIndex;
+    mapping (uint256 => MintWindow) internal mintWindows;
+    Counters.Counter private _registrationIndex;
+
     uint256 public remainingMints = Constants.MAX_TOKEN_COUNT;
 
     // Timestamp when next eligible buyers can be selected
@@ -47,6 +50,8 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
         keyHash = _keyhash;
         fee = 0.0001 * 10**18;
         nextWindow = block.timestamp + 2 minutes;
+        // use a 1-based counter so that a 0 value for an address represents "unregistered"
+        _registrationIndex.increment();
     }
 
     /**
@@ -55,9 +60,9 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     * approach, but there is no Sybil resistance and may be flooded by bots.
     */
     function registerForDrop() public {
-        require(registrationStatus[_msgSender()] == RegistrationStatus.Unregistered, "Already registered");
-        registrationStatus[_msgSender()] = RegistrationStatus.Registered;
-        registrants.push(_msgSender());
+        require(registrationIndex[_msgSender()] == 0, "Already registered");
+        registrationIndex[_msgSender()] = _registrationIndex.current();
+        _registrationIndex.increment();
     }
 
     /**
@@ -67,9 +72,9 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     * project to perform KYC or anti-bot checks, such as requiring an email registration.
     */
     function kycRegisterForDrop() public onlyForwarder {
-        require(registrationStatus[_msgSender()] == RegistrationStatus.Unregistered, "Already registered");
-        registrationStatus[_msgSender()] = RegistrationStatus.Registered;
-        registrants.push(_msgSender());
+        require(registrationIndex[_msgSender()] == 0, "Already registered");
+        registrationIndex[_msgSender()] = _registrationIndex.current();
+        _registrationIndex.increment();
     }
 
     /**
@@ -79,10 +84,10 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     */
     function adminBulkRegisterForDrop(address[] memory addresses) public onlyOwner {
         for (uint256 i = 0; i < addresses.length; i++) {
-            if (registrationStatus[addresses[i]] == RegistrationStatus.Unregistered) {
-                registrationStatus[addresses[i]] = RegistrationStatus.Registered;
-                registrants.push(addresses[i]);
+            if (registrationIndex[_msgSender()] == 0) {
+                registrationIndex[addresses[i]] = _registrationIndex.current();
 
+                _registrationIndex.increment();
             }
         }
     }
@@ -95,7 +100,11 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     */
     function selectEligibleBuyers() public {
         require(block.timestamp > nextWindow, "Buying window still open");
-        nextWindow += Constants.WINDOW;
+        mintWindows[nextWindow] = MintWindow({
+            registrationsCount: _registrationIndex.current() - 1,
+            remainingMints: remainingMints,
+            seed: 0
+        });
         randomnessRequestId = requestRandomness(keyHash, fee);
     }
 
@@ -110,30 +119,49 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     */
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         require(requestId == randomnessRequestId, "Bad randomness fulfillment");
+        mintWindows[nextWindow].seed = randomness;
+        nextWindow += Constants.WINDOW;
+    }
 
-        uint256 iterations = 0;
-        while (iterations < Constants.WINDOW_PARTICIPANTS && iterations < registrants.length) {
-            uint256 localPseudoRandom = uint256(keccak256(abi.encode(randomness, block.timestamp, iterations)));
-            address eligible = registrants[localPseudoRandom % registrants.length];
-            if (registrationStatus[eligible] == RegistrationStatus.Registered) {
-                currentlyEligible[iterations] = eligible;
-                registrationStatus[eligible] = RegistrationStatus.Eligible;
-            }
-            iterations += 1;
+
+    /**
+    * @notice Callback function used by VRF Coordinator
+    * @dev Chainlink VRF is inexpensive enough on Polygon to use it for
+    * trustless, fair and on-chain drops. When the contract receives a
+    * random number from VRF, we select n WINDOW_PARTICIPANTS who are
+    * newly eligible to mint.
+    */
+    function eligible() public view returns (bool) {
+        if (_undersubscribed()) return true;
+
+        MintWindow storage window = mintWindows[nextWindow - Constants.WINDOW];
+
+        uint256 addressIndex = registrationIndex[msg.sender];
+        uint256 registrationsCount = window.registrationsCount;
+
+        if (addressIndex == 0 || addressIndex > registrationsCount) return false;
+        uint256 sliceSize = registrationsCount / window.remainingMints;
+
+        uint256 startIndex = window.seed % sliceSize;
+
+        if (addressIndex - 1 < startIndex) {
+            return false;
         }
+
+        return (addressIndex - 1 - startIndex) % sliceSize == 0;
     }
 
     /**
-    * @notice Claim mint pass by asking Polygon to checkpoint a tx to L1
+    * @notice Claim mint pass by asking Polygon to checkpoint this tx to L1
     * @dev using the registrationStatus mapping, your frontend can display
     * a button to perform this transaction for eligible minters. Once performed,
     * the transaction will be checkpointed on L1 in ~15 minutes. Once checkpointed,
     * use the Matic JS SDK to generate a proof to submit to the L1 contract.
     */
     function claim() public {
-        require (registrationStatus[_msgSender()] == RegistrationStatus.Eligible, "401");
+        require (eligible(), "FDR:c:401");
 
-        _sendMessageToRoot(abi.encode(_msgSender()));
+        _sendMessageToRoot(abi.encode(_msgSender(), nextWindow));
     }
 
     /**
@@ -146,7 +174,6 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     ) internal override validateSender(sender) {
         (uint256 _remainingMints, address minter) = abi.decode(data, (uint256, address));
         remainingMints = _remainingMints;
-        registrationStatus[minter] = RegistrationStatus.Ineligible;
     }
 
     function _msgSender() internal view override(Context, ERC2771Context) returns (address sender) {
@@ -166,5 +193,9 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
         } else {
             return super._msgData();
         }
+    }
+
+    function _undersubscribed() internal view returns (bool) {
+        return remainingMints >  _registrationIndex.current();
     }
 }

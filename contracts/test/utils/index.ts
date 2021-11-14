@@ -1,4 +1,4 @@
-import {Contract, ContractFactory, Signer} from 'ethers';
+import {constants, Contract, ContractFactory, Signer} from 'ethers';
 import {ethers,} from 'hardhat';
 import { SignerWithAddress } from 'hardhat-deploy-ethers/dist/src/signers';
 import { FairDropRegistration__factory, FairDropRegistration } from '../../typechain';
@@ -48,7 +48,8 @@ export async function deployContracts(owner: SignerWithAddress) {
     vrfCoordinatorMock.address,
     link.address,
     keyhash,
-    '0xCf73231F28B7331BBe3124B907840A94851f9f11'
+    '0xCf73231F28B7331BBe3124B907840A94851f9f11',
+    constants.AddressZero
   )
 
   // await link.transfer(FairDropRegistration.address, '100000000000000000000');
