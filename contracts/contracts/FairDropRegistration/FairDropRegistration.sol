@@ -8,9 +8,14 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 import "@maticnetwork/fx-portal/contracts/tunnel/FxBaseChildTunnel.sol";
 
+import "hardhat/console.sol";
+
+
 import { Constants } from "../Libraries/Constants.sol";
 
 contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ERC2771Context {
+    event RequestedRandom(bytes32 requestId);
+
     using Counters for Counters.Counter;
 
     bytes32 internal keyHash;
@@ -23,7 +28,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
         uint256 seed;
     }
 
-    mapping (address => uint256) internal registrationIndex;
+    mapping (address => uint256) public registrationIndex;
     mapping (uint256 => MintWindow) internal mintWindows;
     Counters.Counter private _registrationIndex;
 
@@ -50,8 +55,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
         keyHash = _keyhash;
         fee = 0.0001 * 10**18;
         nextWindow = block.timestamp + 2 minutes;
-        // use a 1-based counter so that a 0 value for an address represents "unregistered"
-        _registrationIndex.increment();
+        _registrationIndex.increment(); // use a 1-based counter so that a 0 value for an address represents "unregistered"
     }
 
     /**
@@ -84,7 +88,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     */
     function adminBulkRegisterForDrop(address[] memory addresses) public onlyOwner {
         for (uint256 i = 0; i < addresses.length; i++) {
-            if (registrationIndex[_msgSender()] == 0) {
+            if (registrationIndex[addresses[i]] == 0) {
                 registrationIndex[addresses[i]] = _registrationIndex.current();
 
                 _registrationIndex.increment();
@@ -98,7 +102,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     * can't be called too soon. This could be replaced by Chainlink keepers once
     * available on Polygon.
     */
-    function selectEligibleBuyers() public {
+    function selectEligibleBuyers() public returns (bytes32) {
         require(block.timestamp > nextWindow, "Buying window still open");
         mintWindows[nextWindow] = MintWindow({
             registrationsCount: _registrationIndex.current() - 1,
@@ -106,6 +110,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
             seed: 0
         });
         randomnessRequestId = requestRandomness(keyHash, fee);
+        emit RequestedRandom(randomnessRequestId);
     }
 
     /**
@@ -120,7 +125,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         require(requestId == randomnessRequestId, "Bad randomness fulfillment");
         mintWindows[nextWindow].seed = randomness;
-        nextWindow += Constants.WINDOW;
+        nextWindow = nextWindow + Constants.WINDOW;
     }
 
 
