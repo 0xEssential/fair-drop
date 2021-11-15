@@ -13,7 +13,7 @@ export async function sendMetaTx(
   method: string,
   args: (string | BigNumber)[],
   onSigned?: () => void,
-): Promise<any> {
+): Promise<Response> {
   const forwarder = new Contract(
     FairDropGasStation.address,
     FairDropGasStation.abi,

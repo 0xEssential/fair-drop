@@ -1,5 +1,5 @@
 import { signIn, useSession } from 'next-auth/react';
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
+import React, { ReactElement, useContext, useState } from 'react';
 
 import {
   abi as registrationAbi,
