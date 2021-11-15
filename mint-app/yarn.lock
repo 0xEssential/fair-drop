@@ -1257,18 +1257,6 @@
     pocket-js-core "0.0.3"
     web3-provider-engine "16.0.1"
 
-"@prisma/client@^2.28.0":
-  version "2.28.0"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.28.0.tgz#6cd91a3c2757814a9454ea23d7e33cd2ff3952db"
-  integrity sha512-iwdxpy0Nz8N40MnhdlRvhZOBk8+GawpEsY5FU8Tfw1k9rvIeTAi+wBHrqhY8bXq6pneZkzrdQ1Hj3tqkrbRmoQ==
-  dependencies:
-    "@prisma/engines-version" "2.28.0-17.89facabd0366f63911d089156a7a70125bfbcd27"
-
-"@prisma/engines-version@2.28.0-17.89facabd0366f63911d089156a7a70125bfbcd27":
-  version "2.28.0-17.89facabd0366f63911d089156a7a70125bfbcd27"
-  resolved "https://registry.yarnpkg.com/@prisma/engines-version/-/engines-version-2.28.0-17.89facabd0366f63911d089156a7a70125bfbcd27.tgz#6dbccdce64f792dbc21c99daef80ec03020c110d"
-  integrity sha512-BWTvF1mGxjG8EtG215uhxdeW5Uf5aiH4xhfzcFPFC3Ux5BdEM1uEBrLIixX67mI+ZNhqNZSBPf0DSf2I1IsaZw==
-
 "@rushstack/eslint-patch@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.0.6.tgz#023d72a5c4531b4ce204528971700a78a85a0c50"
@@ -2464,12 +2452,12 @@ bnb-javascript-sdk-nobroadcast@^2.16.14:
     websocket-stream "^5.5.0"
 
 bnc-notify@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/bnc-notify/-/bnc-notify-1.7.0.tgz#5576ddb96c5f3c56dbe96affb87c3d1be6db07ca"
-  integrity sha512-3uMbZS5qQfHE9rSrA1fGpTGLExma4Kuvktv7W9GaTg8QnTpkdz6AbxE25jQ4LseL5mzvQn8Pi6ENHldBlO5ZcQ==
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/bnc-notify/-/bnc-notify-1.9.1.tgz#cd8ec8e5f5482cf78b6caea7de35288ee73d6b32"
+  integrity sha512-OWXI6KIOU/0CWhlFBiIStfbio3X5uUTeBjG6h4R7Ng6MABqZHMFRCNOgVQ50HdwwZiaFMuA3l23cZLxJjyaY0Q==
   dependencies:
     bignumber.js "^9.0.0"
-    bnc-sdk "^3.4.1"
+    bnc-sdk "^3.5.0"
     lodash.debounce "^4.0.8"
     regenerator-runtime "^0.13.3"
     uuid "^3.3.3"
@@ -2510,10 +2498,10 @@ bnc-onboard@^1.30.0:
     walletlink "^2.1.6"
     web3-provider-engine "^15.0.4"
 
-bnc-sdk@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-3.4.1.tgz#fca070656a6efbfc489889ed0404e1b6289c17ff"
-  integrity sha512-GrZzN3zyqVOmtk++tvq/X1zchO+Bt9TIzw39xv7UkMLEUcs43pwj6XWphLRbqkrrILNSrLwOI0S8opyjffDFAA==
+bnc-sdk@^3.4.1, bnc-sdk@^3.5.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-3.7.0.tgz#b6472067baad41e102c4fe748ba3cc32793fca9e"
+  integrity sha512-o8vd+LLL+sBU3aE+/tmhilbtkKQpGvA9rBhvT/bszvBpAgSNzVaP3vdmNPaglDmE2WymcrqvQGf57z5l9v+rrw==
   dependencies:
     crypto-es "^1.2.2"
     rxjs "^6.6.3"
@@ -8121,7 +8109,7 @@ react-lifecycles-compat@^3.0.0:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-modal@^3.12.1, react-modal@^3.14.3:
+react-modal@^3.12.1:
   version "3.14.3"
   resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.14.3.tgz#7eb7c5ec85523e5843e2d4737cc17fc3f6aeb1c0"
   integrity sha512-+C2KODVKyu20zHXPJxfOOcf571L1u/EpFlH+oS/3YDn8rgVE51QZuxuuIwabJ8ZFnOEHaD+r6XNjqwtxZnXO0g==
@@ -9291,10 +9279,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-swr@^0.5.6:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.6.tgz#70bfe9bc9d7ac49a064be4a0f4acf57982e55a31"
-  integrity sha512-Bmx3L4geMZjYT5S2Z6EE6/5Cx6v1Ka0LhqZKq8d6WL2eu9y6gHWz3dUzfIK/ymZVHVfwT/EweFXiYGgfifei3w==
+swr@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-1.0.1.tgz#15f62846b87ee000e52fa07812bb65eb62d79483"
+  integrity sha512-EPQAxSjoD4IaM49rpRHK0q+/NzcwoT8c0/Ylu/u3/6mFj/CWnQVjNJ0MV2Iuw/U+EJSd2TX5czdAwKPYZIG0YA==
   dependencies:
     dequal "2.0.2"
 

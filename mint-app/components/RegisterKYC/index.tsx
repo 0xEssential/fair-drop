@@ -1,5 +1,5 @@
 import { signIn, useSession } from 'next-auth/react';
-import React, { ReactElement, useContext, useState } from 'react';
+import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import {
   abi as registrationAbi,
@@ -8,13 +8,18 @@ import {
 import { Web3Context } from '../../contexts/web3Context';
 import useContract from '../../hooks/useContract';
 import { FairDropRegistration } from '../../typechain';
+import { addEtherscan } from '../../utils/connect';
 import { sendMetaTx } from '../../utils/metaTx';
 import { requiredNetwork } from '../../utils/network';
 import Button from '../Button';
 import SwitchNetworkButton from '../SwitchNetworkButton';
 import styles from './styles.module.css';
 
-export default function RegisterKYC(): ReactElement {
+export default function RegisterKYC({
+  onRegister,
+}: {
+  onRegister: () => void;
+}): ReactElement {
   const { status } = useSession();
   const [registering, setRegistering] = useState(false);
   const [error, setError] = useState(null);
@@ -84,16 +89,19 @@ export default function RegisterKYC(): ReactElement {
               .then((resp) => resp.json())
               .then((data) => {
                 console.warn(data);
-                setRegistering(false);
+
                 if (!data.success) {
+                  setRegistering(false);
                   return setError(data?.error);
                 }
+                const { emitter } = notify.hash(data.txHash);
+                emitter.on('all', addEtherscan);
 
-                notify.hash(data.txHash);
+                onRegister();
               });
           }}
         >
-          {registering ? 'Loading' : 'Register for Drop'}
+          {registering ? 'Transaction processing...' : 'Register for Drop'}
         </Button>
       )}
       <p>{error}</p>

@@ -26,12 +26,14 @@ export default function Mint(): ReactElement {
     fairDropRegistration.abi,
   );
 
-  const { data: state } = useSWR(
+  const { data: state, mutate } = useSWR(
     contract ? 'status-' + (address || 'json') : null,
     async () => {
       const registrationIndex = address
-        ? await await contract.registrationIndex(address)
+        ? await contract.registrationIndex(address)
         : BigNumber.from(0);
+
+      console.warn('RI', registrationIndex.toNumber());
       const eligible = address ? await contract.eligible(address) : false;
       const remaining = await contract.remainingMints();
       const mintWindow = await contract.nextWindow();
@@ -43,9 +45,6 @@ export default function Mint(): ReactElement {
         remaining,
         mintWindow,
       };
-    },
-    {
-      // refreshInterval: 1000,
     },
   );
 
@@ -79,7 +78,16 @@ export default function Mint(): ReactElement {
           <p>
             <strong>Mint Price:</strong> 0.02 ETH
           </p>
-          {state?.status === RegistrationStatus.Unregistered && <RegisterKYC />}
+          {state?.status === RegistrationStatus.Unregistered && (
+            <RegisterKYC
+              onRegister={() => {
+                mutate(
+                  { ...state, status: RegistrationStatus.Registered },
+                  false,
+                );
+              }}
+            />
+          )}
 
           {state?.status === RegistrationStatus.Registered && (
             <p>

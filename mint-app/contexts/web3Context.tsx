@@ -15,7 +15,7 @@ const defaultValue: {
   address?: string;
   provider?: Web3Provider;
   jsonProvider?: JsonRpcProvider;
-  notify?: { hash: (txHash: string) => void };
+  notify?: { hash: (txHash: string) => { emitter: any } };
   network?: number;
 } = {};
 

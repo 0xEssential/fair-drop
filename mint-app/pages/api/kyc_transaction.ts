@@ -23,15 +23,15 @@ export default async (req, res) => {
   const db = client.db();
   const user = await db.collection('users').findOne({ email });
 
-  if (user) {
-    return res.send(
-      JSON.stringify({
-        success: false,
-        error:
-          'This Discord account has already registered for the drop with another address.',
-      }),
-    );
-  }
+  // if (user) {
+  //   return res.send(
+  //     JSON.stringify({
+  //       success: false,
+  //       error:
+  //         'This Discord account has already registered for the drop with another address.',
+  //     }),
+  //   );
+  // }
 
   const result = await fetch(process.env.AUTOTASK_URL, {
     method: 'POST',
