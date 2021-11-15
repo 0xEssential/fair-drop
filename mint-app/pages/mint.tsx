@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import fairDropRegistration from '../../contracts/deployments/mumbai/FairDropRegistration.json';
 import MintFlow from '../components/MintFlow';
 import RegisterKYC from '../components/RegisterKYC';
-import SwitchNetworkButton from '../components/SwitchNetworkButton';
 import { Web3Context } from '../contexts/web3Context';
 import useContract from '../hooks/useContract';
 import styles from '../styles/Mint.module.css';

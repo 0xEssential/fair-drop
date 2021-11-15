@@ -67,17 +67,17 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     });
 
     setOnboard(onboard);
-    // provider && setNotify(initNotify());
+    setNotify(initNotify());
   }, []);
 
-  // useEffect(() => {
-  //   const previouslySelectedWallet =
-  //     window.localStorage.getItem('selectedWallet');
+  useEffect(() => {
+    const previouslySelectedWallet =
+      window.localStorage.getItem('selectedWallet');
 
-  //   if (previouslySelectedWallet && onboard) {
-  //     onboard.walletSelect(previouslySelectedWallet);
-  //   }
-  // }, [onboard]);
+    if (previouslySelectedWallet && onboard) {
+      onboard.walletSelect(previouslySelectedWallet);
+    }
+  }, [onboard]);
 
   useEffect(() => {
     if (!addressRef.current) {
