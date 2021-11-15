@@ -14,7 +14,7 @@ export function initOnboard(subscriptions) {
   return Onboard({
     dappId,
     hideBranding: true,
-    networkId: 80001,
+    networkId: 137,
     blockPollingInterval: 100_000,
     networkName: networkId === 80001 ? 'polygon-mumbai' : 'polygon-mainnet',
     darkMode: true,
