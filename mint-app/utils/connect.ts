@@ -10,7 +10,6 @@ const dappId = '5c501569-1ad1-490d-a7d0-d8a0aba75dad';
 // const rpcUrl = process.env.RPC_URL;
 // const dappId = '5c501569-1ad1-490d-a7d0-d8a0aba75dad';
 
-console.warn(networkId);
 export function initOnboard(subscriptions) {
   return Onboard({
     dappId,
@@ -26,7 +25,7 @@ export function initOnboard(subscriptions) {
           walletName: 'walletConnect',
           // infuraKey: process.env.INFURA_KEY,
           rpc: {
-            80001: rpcUrl,
+            [80001]: rpcUrl,
             // 137: rpcUrl,
           }, // [Optional]
         },
