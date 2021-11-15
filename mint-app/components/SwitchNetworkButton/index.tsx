@@ -24,11 +24,7 @@ export const chainArgs = {
   '80001': {
     chainId: '0x13881',
     chainName: 'Mumbai Testnet',
-    rpcUrls: [
-      'https://polygon-mumbai.infura.io/v3/69e9744c6cc845a38565011900d04b88',
-      // 'https://rpc-mumbai.matic.today/',
-      // 'https://matic-mumbai.chainstacklabs.com',
-    ],
+    rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
     iconUrls: [],
     nativeCurrency: {
       name: 'Matic',

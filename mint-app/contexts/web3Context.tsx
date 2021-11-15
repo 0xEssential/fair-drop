@@ -41,7 +41,7 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
       wallet: (wallet) => {
         if (wallet.provider) {
           setWallet(wallet);
-          const provider = new Web3Provider(wallet.provider, 'any');
+          const provider = new Web3Provider(wallet.provider, 80001);
           setProvider(provider);
           window.localStorage.setItem('selectedWallet', wallet.name);
         } else {
