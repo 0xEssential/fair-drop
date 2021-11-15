@@ -1,3 +1,4 @@
+import { constants } from 'ethers';
 import React, { ReactElement, useContext } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
@@ -12,6 +13,14 @@ import styles from '../styles/Mint.module.css';
 import { FairDropRegistration } from '../typechain';
 import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
+const statusForIndex = (index: number) => {
+  if (index === 0) return RegistrationStatus.Unregistered;
+  if (index === constants.MaxInt256.toNumber())
+    return RegistrationStatus.Ineligible;
+
+  return RegistrationStatus.Registered;
+};
+
 export default function Mint(): ReactElement {
   const { address } = useContext(Web3Context);
   const contract = useContract<FairDropRegistration>(
@@ -22,14 +31,14 @@ export default function Mint(): ReactElement {
   const { data: state, error } = useSWR(
     contract ? 'status-' + (address || 'json') : null,
     async () => {
-      const status = address
-        ? await contract.registrationStatus(address).catch(() => 0)
+      const registrationIndex = address
+        ? await (await contract.registrationIndex(address)).toNumber()
         : 0;
       const remaining = await contract.remainingMints();
       const mintWindow = await contract.nextWindow();
 
       return {
-        status: Object.values(RegistrationStatus)[status],
+        status: statusForIndex(registrationIndex),
         remaining,
         mintWindow,
       };

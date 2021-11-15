@@ -8,9 +8,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 import "@maticnetwork/fx-portal/contracts/tunnel/FxBaseChildTunnel.sol";
 
-import "hardhat/console.sol";
-
-
 import { Constants } from "../Libraries/Constants.sol";
 
 contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ERC2771Context {
@@ -56,7 +53,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     ERC2771Context(forwarder) {
         keyHash = _keyhash;
         fee = 0.0001 * 10**18;
-        nextWindow = block.timestamp + 2 minutes;
+        nextWindow = block.timestamp + Constants.WINDOW;
         _registrationIndex.increment(); // use a 1-based counter so that a 0 value for an address represents "unregistered"
     }
 
@@ -188,6 +185,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     ) internal override validateSender(sender) {
         (uint256 _remainingMints, address minter) = abi.decode(data, (uint256, address));
         remainingMints = _remainingMints;
+        registrationIndex[minter] = 2**256 - 1;
     }
 
     function _msgSender() internal view override(Context, ERC2771Context) returns (address sender) {

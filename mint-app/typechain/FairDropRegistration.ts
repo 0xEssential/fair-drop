@@ -28,7 +28,7 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
   functions: {
     "adminBulkRegisterForDrop(address[])": FunctionFragment;
     "claim()": FunctionFragment;
-    "currentlyEligible(uint256)": FunctionFragment;
+    "eligible(address)": FunctionFragment;
     "fxChild()": FunctionFragment;
     "fxRootTunnel()": FunctionFragment;
     "isTrustedForwarder(address)": FunctionFragment;
@@ -38,7 +38,7 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     "processMessageFromRoot(uint256,address,bytes)": FunctionFragment;
     "rawFulfillRandomness(bytes32,uint256)": FunctionFragment;
     "registerForDrop()": FunctionFragment;
-    "registrationStatus(address)": FunctionFragment;
+    "registrationIndex(address)": FunctionFragment;
     "remainingMints()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "selectEligibleBuyers()": FunctionFragment;
@@ -51,10 +51,7 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     values: [string[]]
   ): string;
   encodeFunctionData(functionFragment: "claim", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "currentlyEligible",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "eligible", values: [string]): string;
   encodeFunctionData(functionFragment: "fxChild", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "fxRootTunnel",
@@ -86,7 +83,7 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "registrationStatus",
+    functionFragment: "registrationIndex",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -115,10 +112,7 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "currentlyEligible",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "eligible", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "fxChild", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "fxRootTunnel",
@@ -147,7 +141,7 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "registrationStatus",
+    functionFragment: "registrationIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -174,10 +168,12 @@ export interface FairDropRegistrationInterface extends ethers.utils.Interface {
   events: {
     "MessageSent(bytes)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "RequestedRandom(bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "MessageSent"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RequestedRandom"): EventFragment;
 }
 
 export type MessageSentEvent = TypedEvent<[string], { message: string }>;
@@ -191,6 +187,10 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export type RequestedRandomEvent = TypedEvent<[string], { requestId: string }>;
+
+export type RequestedRandomEventFilter = TypedEventFilter<RequestedRandomEvent>;
 
 export interface FairDropRegistration extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -228,10 +228,7 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    currentlyEligible(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+    eligible(entrant: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     fxChild(overrides?: CallOverrides): Promise<[string]>;
 
@@ -267,10 +264,10 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    registrationStatus(
+    registrationIndex(
       arg0: string,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     remainingMints(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -302,10 +299,7 @@ export interface FairDropRegistration extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  currentlyEligible(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  eligible(entrant: string, overrides?: CallOverrides): Promise<boolean>;
 
   fxChild(overrides?: CallOverrides): Promise<string>;
 
@@ -341,7 +335,10 @@ export interface FairDropRegistration extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  registrationStatus(arg0: string, overrides?: CallOverrides): Promise<number>;
+  registrationIndex(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   remainingMints(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -371,10 +368,7 @@ export interface FairDropRegistration extends BaseContract {
 
     claim(overrides?: CallOverrides): Promise<void>;
 
-    currentlyEligible(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    eligible(entrant: string, overrides?: CallOverrides): Promise<boolean>;
 
     fxChild(overrides?: CallOverrides): Promise<string>;
 
@@ -406,16 +400,16 @@ export interface FairDropRegistration extends BaseContract {
 
     registerForDrop(overrides?: CallOverrides): Promise<void>;
 
-    registrationStatus(
+    registrationIndex(
       arg0: string,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     remainingMints(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    selectEligibleBuyers(overrides?: CallOverrides): Promise<void>;
+    selectEligibleBuyers(overrides?: CallOverrides): Promise<string>;
 
     setFxRootTunnel(
       _fxRootTunnel: string,
@@ -440,6 +434,9 @@ export interface FairDropRegistration extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
+
+    "RequestedRandom(bytes32)"(requestId?: null): RequestedRandomEventFilter;
+    RequestedRandom(requestId?: null): RequestedRandomEventFilter;
   };
 
   estimateGas: {
@@ -452,10 +449,7 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    currentlyEligible(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    eligible(entrant: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     fxChild(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -491,7 +485,7 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    registrationStatus(
+    registrationIndex(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -527,8 +521,8 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    currentlyEligible(
-      arg0: BigNumberish,
+    eligible(
+      entrant: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -566,7 +560,7 @@ export interface FairDropRegistration extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    registrationStatus(
+    registrationIndex(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

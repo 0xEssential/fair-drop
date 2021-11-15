@@ -86,8 +86,8 @@ describe('Drop Registration', function () {
       } = fixtures;
 
       const addresses = [];
-      for (let index = 1; index < 250; index++) {
-        const address = hexZeroPad(hexlify(index), 20)
+      for (let index = 0; index < 250; index++) {
+        const address = hexZeroPad(hexValue(index), 20)
         addresses.push(getAddress(address))
       }
 
