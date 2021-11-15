@@ -10,6 +10,7 @@ import {
 import { BigNumber } from 'ethers';
 
 import {FairDropRegistration, VRFCoordinatorMock } from '../typechain'
+import { getAddress, hexlify, hexValue, hexZeroPad } from 'ethers/lib/utils';
 
 describe('Drop Registration', function () {
   const setup = deployments.createFixture(async () => {
@@ -83,39 +84,52 @@ describe('Drop Registration', function () {
         users,
         owner
       } = fixtures;
-        await timetravelBlocks(1000);
 
-        const tx = await owner.FairDropRegistration.selectEligibleBuyers();
-        const receipt = await tx.wait();
+      const addresses = [];
+      for (let index = 1; index < 250; index++) {
+        const address = hexZeroPad(hexlify(index), 20)
+        addresses.push(getAddress(address))
+      }
 
-        const seed = BigNumber.from(Math.floor(Math.random() * 1000));
+      await owner.FairDropRegistration.adminBulkRegisterForDrop(
+        addresses
+      );
 
-        const requestId = receipt.events[3].data;
+      await timetravelBlocks(1000);
 
-        const randomnessTx = await owner.VRF.callBackWithRandomness(
-          requestId,
-          seed,
-          await owner.FairDropRegistration.resolvedAddress
-        );
+      const tx = await owner.FairDropRegistration.selectEligibleBuyers();
+      const receipt = await tx.wait();
 
-        await randomnessTx.wait();
+      const seed = BigNumber.from(Math.floor(Math.random() * 1000));
 
-        const winnersCount = await users[0].FairDropRegistration.remainingMints();
-        const slice = Math.floor(users.length / winnersCount.toNumber());
-        const start = seed.mod(slice);
+      const requestId = receipt.events[3].data;
 
-        console.warn(seed.toNumber(), slice, start.toNumber(), users.length)
+      const randomnessTx = await owner.VRF.callBackWithRandomness(
+        requestId,
+        seed,
+        await owner.FairDropRegistration.resolvedAddress
+      );
 
-        const status = await  users[start.toNumber()].FairDropRegistration.eligible();
-        const status2 = await users[start.add(slice).toNumber()].FairDropRegistration.eligible();
-        const status3 = await users[start.add(slice * 2).toNumber()].FairDropRegistration.eligible();
-        const status4 = await users[start.add(slice * 3).toNumber()].FairDropRegistration.eligible();
-        const status5 = await users[start.add(slice * 4).toNumber()].FairDropRegistration.eligible();
+      await randomnessTx.wait();
 
-        console.warn(status, status2, status3, status4, status5)
+      const entrants = users.map((u) => u.address).concat(addresses);
+
+      const winnersCount = await users[0].FairDropRegistration.remainingMints();
+      const slice = Math.floor(entrants.length / winnersCount.toNumber());
+      const start = seed.mod(slice);
+
+      const expectedMinters = [];
+
+      while (expectedMinters.length < winnersCount.toNumber()) {
+        const step = expectedMinters.length;
+        expectedMinters.push(entrants[start.add(slice * step).toNumber()])
+      };
+
+
+      for (const address of expectedMinters) {
+        const status = await  owner.FairDropRegistration.eligible(address);
         expect(status).to.eq(true);
-        expect(status2).to.eq(true);
-
+      }
     });
   });
 });

@@ -30,6 +30,8 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
 
     mapping (address => uint256) public registrationIndex;
     mapping (uint256 => MintWindow) internal mintWindows;
+    mapping (uint256 => bytes32) windowRequestIds;
+
     Counters.Counter private _registrationIndex;
 
     uint256 public remainingMints = Constants.MAX_TOKEN_COUNT;
@@ -104,12 +106,16 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     */
     function selectEligibleBuyers() public returns (bytes32) {
         require(block.timestamp > nextWindow, "Buying window still open");
+        require(windowRequestIds[nextWindow] == bytes32(0), "Randomness requested for window");
+
         mintWindows[nextWindow] = MintWindow({
             registrationsCount: _registrationIndex.current() - 1,
             remainingMints: remainingMints,
             seed: 0
         });
         randomnessRequestId = requestRandomness(keyHash, fee);
+        windowRequestIds[nextWindow] = randomnessRequestId;
+
         emit RequestedRandom(randomnessRequestId);
     }
 
@@ -139,12 +145,12 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     * we might generate an index offset of 8. Addresses at indices
     * 8, 28, 48, 68 and 88 would then be eligible to mint.
     */
-    function eligible() public view returns (bool) {
+    function eligible(address entrant) public view returns (bool) {
         if (_undersubscribed()) return true;
 
         MintWindow storage window = mintWindows[nextWindow - Constants.WINDOW];
 
-        uint256 addressIndex = registrationIndex[msg.sender];
+        uint256 addressIndex = registrationIndex[entrant];
         uint256 registrationsCount = window.registrationsCount;
 
         if (addressIndex == 0 || addressIndex > registrationsCount) return false;
@@ -167,7 +173,7 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     * use the Matic JS SDK to generate a proof to submit to the L1 contract.
     */
     function claim() public {
-        require (eligible(), "FDR:c:401");
+        require (eligible(msg.sender), "FDR:c:401");
 
         _sendMessageToRoot(abi.encode(_msgSender(), nextWindow));
     }
