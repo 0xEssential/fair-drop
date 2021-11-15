@@ -13,8 +13,8 @@ import { FairDropRegistration } from '../typechain';
 import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
 const statusForIndex = (index: BigNumber) => {
-  if (index === BigNumber.from(0)) return RegistrationStatus.Unregistered;
-  if (index === constants.MaxInt256) return RegistrationStatus.Ineligible;
+  if (index.eq(BigNumber.from(0))) return RegistrationStatus.Unregistered;
+  if (index.eq(constants.MaxInt256)) return RegistrationStatus.Ineligible;
 
   return RegistrationStatus.Registered;
 };
