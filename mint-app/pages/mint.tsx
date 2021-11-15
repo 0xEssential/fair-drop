@@ -26,7 +26,7 @@ export default function Mint(): ReactElement {
     fairDropRegistration.abi,
   );
 
-  const { data: state, error } = useSWR(
+  const { data: state } = useSWR(
     contract ? 'status-' + (address || 'json') : null,
     async () => {
       const registrationIndex = address
