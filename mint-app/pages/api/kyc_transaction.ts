@@ -27,7 +27,8 @@ export default async (req, res) => {
     return res.send(
       JSON.stringify({
         success: false,
-        error: 'Already registered',
+        error:
+          'This Discord account has already registered for the drop with another address.',
       }),
     );
   }
@@ -47,7 +48,7 @@ export default async (req, res) => {
     return res.send(
       JSON.stringify({
         success: true,
-        txHash: result?.hash,
+        txHash: result?.txHash,
       }),
     );
   }
@@ -55,7 +56,7 @@ export default async (req, res) => {
   return res.send(
     JSON.stringify({
       success: false,
-      error: 'Transaction error',
+      error: 'Transaction error, please try again.',
     }),
   );
 };

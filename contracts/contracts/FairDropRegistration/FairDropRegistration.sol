@@ -143,9 +143,10 @@ contract FairDropRegistration is Ownable, FxBaseChildTunnel, VRFConsumerBase, ER
     * 8, 28, 48, 68 and 88 would then be eligible to mint.
     */
     function eligible(address entrant) public view returns (bool) {
-        if (_undersubscribed()) return true;
-
         MintWindow storage window = mintWindows[nextWindow - Constants.WINDOW];
+
+        if (_undersubscribed() && window.seed != 0) return true;
+
 
         uint256 addressIndex = registrationIndex[entrant];
         uint256 registrationsCount = window.registrationsCount;

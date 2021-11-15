@@ -1,11 +1,10 @@
-import { constants } from 'ethers';
+import { BigNumber, constants } from 'ethers';
 import React, { ReactElement, useContext } from 'react';
 import Countdown from 'react-countdown';
 import useSWR from 'swr';
 
 import fairDropRegistration from '../../contracts/deployments/mumbai/FairDropRegistration.json';
 import MintFlow from '../components/MintFlow';
-import Register from '../components/Register';
 import RegisterKYC from '../components/RegisterKYC';
 import { Web3Context } from '../contexts/web3Context';
 import useContract from '../hooks/useContract';
@@ -13,10 +12,9 @@ import styles from '../styles/Mint.module.css';
 import { FairDropRegistration } from '../typechain';
 import { RegistrationStatus } from '../utils/registrationStatusEnum';
 
-const statusForIndex = (index: number) => {
-  if (index === 0) return RegistrationStatus.Unregistered;
-  if (index === constants.MaxInt256.toNumber())
-    return RegistrationStatus.Ineligible;
+const statusForIndex = (index: BigNumber) => {
+  if (index === BigNumber.from(0)) return RegistrationStatus.Unregistered;
+  if (index === constants.MaxInt256) return RegistrationStatus.Ineligible;
 
   return RegistrationStatus.Registered;
 };
@@ -32,13 +30,16 @@ export default function Mint(): ReactElement {
     contract ? 'status-' + (address || 'json') : null,
     async () => {
       const registrationIndex = address
-        ? await (await contract.registrationIndex(address)).toNumber()
-        : 0;
+        ? await await contract.registrationIndex(address)
+        : BigNumber.from(0);
+      const eligible = address ? await contract.eligible(address) : false;
       const remaining = await contract.remainingMints();
       const mintWindow = await contract.nextWindow();
 
       return {
-        status: statusForIndex(registrationIndex),
+        status: eligible
+          ? RegistrationStatus.Eligible
+          : statusForIndex(registrationIndex),
         remaining,
         mintWindow,
       };
@@ -47,8 +48,6 @@ export default function Mint(): ReactElement {
       // refreshInterval: 1000,
     },
   );
-
-  console.warn(state, error);
 
   return (
     <div className="article">
@@ -80,7 +79,6 @@ export default function Mint(): ReactElement {
           <p>
             <strong>Mint Price:</strong> 0.02 ETH
           </p>
-          {state?.status === RegistrationStatus.Unregistered && <Register />}
           {state?.status === RegistrationStatus.Unregistered && <RegisterKYC />}
 
           {state?.status === RegistrationStatus.Registered && (

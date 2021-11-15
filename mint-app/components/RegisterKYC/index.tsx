@@ -17,8 +17,10 @@ import styles from './styles.module.css';
 export default function RegisterKYC(): ReactElement {
   const { status } = useSession();
   const [registering, setRegistering] = useState(false);
+  const [error, setError] = useState(null);
 
-  const { address, onboard, provider, network } = useContext(Web3Context);
+  const { address, onboard, provider, network, notify } =
+    useContext(Web3Context);
 
   const registrationContract = useContract<FairDropRegistration>(
     registrationAddress,
@@ -42,7 +44,14 @@ export default function RegisterKYC(): ReactElement {
   if (status !== 'authenticated') {
     return (
       <div className={styles.root}>
-        <Button onClick={() => signIn('discord')}>KYC with Discord</Button>
+        <Button onClick={() => signIn('discord')}>Log in with Discord</Button>
+        <p>
+          <small>
+            We&apos;re using Discord for some light KYC and to try to prevent
+            bots from winning the raffle. 0xEssential may send you occasional
+            emails to the address associated with your Discord account.
+          </small>
+        </p>
       </div>
     );
   }
@@ -71,14 +80,23 @@ export default function RegisterKYC(): ReactElement {
               'kycRegisterForDrop',
               [],
               () => setRegistering(true),
-            );
+            )
+              .then((resp) => resp.json())
+              .then((data) => {
+                console.warn(data);
+                setRegistering(false);
+                if (!data.success) {
+                  return setError(data?.error);
+                }
 
-            setRegistering(true);
+                notify.hash(data.txHash);
+              });
           }}
         >
           {registering ? 'Loading' : 'Register for Drop'}
         </Button>
       )}
+      <p>{error}</p>
     </div>
   );
 }
