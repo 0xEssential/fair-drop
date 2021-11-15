@@ -14,7 +14,8 @@ export function initOnboard(subscriptions) {
   return Onboard({
     dappId,
     hideBranding: true,
-    networkId,
+    networkId: 80001,
+    blockPollingInterval: 100_000,
     networkName: networkId === 80001 ? 'polygon-mumbai' : 'polygon-mainnet',
     darkMode: true,
     subscriptions,
@@ -25,8 +26,8 @@ export function initOnboard(subscriptions) {
           walletName: 'walletConnect',
           // infuraKey: process.env.INFURA_KEY,
           rpc: {
-            [80001]: rpcUrl,
-            // 137: rpcUrl,
+            80001: rpcUrl,
+            137: rpcUrl,
           }, // [Optional]
         },
         // {
@@ -68,7 +69,8 @@ export function initOnboard(subscriptions) {
     },
     walletCheck: [
       // { checkName: 'derivationPath' },
-      // { checkName: 'connect' },
+      { checkName: 'connect' },
+      // { checkName: 'network' },
       // { checkName: 'accounts' },
     ],
   });

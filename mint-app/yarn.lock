@@ -2294,10 +2294,10 @@ bnc-notify@^1.7.0:
     regenerator-runtime "^0.13.3"
     uuid "^3.3.3"
 
-bnc-onboard@^1.30.0:
-  version "1.35.4"
-  resolved "https://registry.yarnpkg.com/bnc-onboard/-/bnc-onboard-1.35.4.tgz#be6894c062fb829e609b447f5f0f64c2a75f349a"
-  integrity sha512-F3zMyosW4PLjIF5HeG/COaacVAdVEYqisFjubE4gY6heZfNTRobMmX1QTq0pL9MaNtW0W70r8LbobVQOVfya+A==
+bnc-onboard@1.35.2:
+  version "1.35.2"
+  resolved "https://registry.yarnpkg.com/bnc-onboard/-/bnc-onboard-1.35.2.tgz#4d6144c66bcf9816867b1dc759adc920fbd02345"
+  integrity sha512-kb912XdSuLV4dDB0YmcPW01caeWtQUymDUkBGvsgQceMRIyA7GQdDKFne2lG/DTHtnDIprJ9zK5g4RYb8eetlQ==
   dependencies:
     "@cvbb/eth-keyring" "^1.1.0"
     "@ensdomains/ensjs" "^2.0.1"
@@ -2328,7 +2328,7 @@ bnc-onboard@^1.30.0:
     hdkey "^2.0.1"
     regenerator-runtime "^0.13.7"
     trezor-connect "^8.1.9"
-    walletlink "^2.2.6"
+    walletlink "^2.1.11"
     web3-provider-engine "^15.0.4"
 
 bnc-sdk@^3.4.1, bnc-sdk@^3.5.0:
@@ -9771,7 +9771,7 @@ vm-browserify@1.1.2, vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-walletlink@^2.2.6:
+walletlink@^2.1.11:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/walletlink/-/walletlink-2.2.6.tgz#cfea3ba94e5ea33e87b0a2f31151a77ee1a59d72"
   integrity sha512-4TF1kkpo9aq1QlfKv6jTCEsV8Rc+1RIuXn2EtsTJt9/H02fG3oy7k49sqB4gXZ9CWN48yoXnmSwq1GdkvfYGjw==

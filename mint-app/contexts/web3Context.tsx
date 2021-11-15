@@ -35,13 +35,28 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
   const addressRef = useRef();
 
   useEffect(() => {
+    window.localStorage.removeItem('walletconnect');
     const onboard = initOnboard({
       address: setAddress,
       network: setNetwork,
       wallet: (wallet) => {
         if (wallet.provider) {
           setWallet(wallet);
-          const provider = new Web3Provider(wallet.provider, 80001);
+          const provider = new Web3Provider(
+            wallet.provider,
+            parseInt(process.env.MATIC_CHAIN_ID, 10),
+          );
+          provider.on('network', (newNetwork, oldNetwork) => {
+            // When a Provider makes its initial connection, it emits a "network"
+            // event with a null oldNetwork along with the newNetwork. So, if the
+            // oldNetwork exists, it represents a changing network
+            if (
+              oldNetwork &&
+              newNetwork.chainId !== parseInt(process.env.MATIC_CHAIN_ID, 10)
+            ) {
+              // signOut();
+            }
+          });
           setProvider(provider);
           window.localStorage.setItem('selectedWallet', wallet.name);
         } else {
@@ -52,17 +67,17 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
     });
 
     setOnboard(onboard);
-    setNotify(initNotify());
+    // provider && setNotify(initNotify());
   }, []);
 
-  useEffect(() => {
-    const previouslySelectedWallet =
-      window.localStorage.getItem('selectedWallet');
+  // useEffect(() => {
+  //   const previouslySelectedWallet =
+  //     window.localStorage.getItem('selectedWallet');
 
-    if (previouslySelectedWallet && onboard) {
-      onboard.walletSelect(previouslySelectedWallet);
-    }
-  }, [onboard]);
+  //   if (previouslySelectedWallet && onboard) {
+  //     onboard.walletSelect(previouslySelectedWallet);
+  //   }
+  // }, [onboard]);
 
   useEffect(() => {
     if (!addressRef.current) {

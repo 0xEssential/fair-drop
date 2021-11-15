@@ -12,7 +12,7 @@
     "@maticnetwork/maticjs": "^2.0.45",
     "@web3-react/core": "^6.1.9",
     "bnc-notify": "^1.7.0",
-    "bnc-onboard": "^1.30.0",
+    "bnc-onboard": "1.35.2",
     "ethers": "^5.5.1",
     "mongodb": "^4.1.4",
     "next": "11.0.1",

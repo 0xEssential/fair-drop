@@ -38,6 +38,7 @@ export default function RegisterKYC({
         <Button
           onClick={async () => {
             await onboard?.walletSelect();
+            await onboard?.walletCheck();
           }}
         >
           Connect Wallet
