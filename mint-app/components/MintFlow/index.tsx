@@ -31,6 +31,7 @@ export default function MintFlow({
   const nftContract = useContract<MintWithProof>(
     MintWithProofContract.address,
     MintWithProofContract.abi,
+    true,
   );
 
   const setClaimTx = async (txHash: string) => {
