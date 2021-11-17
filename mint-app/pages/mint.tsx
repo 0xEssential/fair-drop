@@ -33,7 +33,6 @@ export default function Mint(): ReactElement {
         ? await contract.registrationIndex(address)
         : BigNumber.from(0);
 
-      console.warn('RI', registrationIndex.toNumber());
       const eligible = address ? await contract.eligible(address) : false;
       const remaining = await contract.remainingMints();
       const mintWindow = await contract.nextWindow();

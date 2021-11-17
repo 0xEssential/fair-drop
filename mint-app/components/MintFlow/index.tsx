@@ -2,6 +2,7 @@ import { MaticPOSClient } from '@maticnetwork/maticjs';
 import { BigNumber } from 'ethers';
 import { utils } from 'ethers';
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
+import Countdown from 'react-countdown';
 
 import MintWithProofContract from '../../../contracts/deployments/goerli/MintWithProof.json';
 import FairDropRegistrationContract from '../../../contracts/deployments/mumbai/FairDropRegistration.json';
@@ -45,13 +46,11 @@ export default function MintFlow({
     _claimTx && jsonProvider && setClaimTx(_claimTx);
   }, [jsonProvider]);
 
-  if (claimTx) {
+  const ready = claimTx?.timestamp + 15 * 60 * 1000 > Date.now();
+
+  if (ready) {
     return (
       <div className={styles.root}>
-        <p>
-          In about 15 minutes your L2 claim transaction will be checkpointed on
-          L1 and you can mint your NFT.
-        </p>
         {requiredNetwork(network, process.env.L1_CHAIN_ID) ? (
           <Button
             onClick={async () => {
@@ -82,6 +81,29 @@ export default function MintFlow({
             Switch to Mainnet
           </SwitchNetworkButton>
         )}
+      </div>
+    );
+  }
+
+  if (claimTx) {
+    return (
+      <div className={styles.root}>
+        <p>
+          In{' '}
+          <Countdown
+            date={(claimTx?.timestamp + 15 * 60) * 1000}
+            onComplete={() => {
+              _setClaimTx({ ...claimTx, timestamp: claimTx.timestamp - 1 });
+            }}
+            renderer={({ minutes, seconds }) => (
+              <span>
+                {minutes} minutes {seconds} seconds
+              </span>
+            )}
+          />{' '}
+          your L2 claim transaction will be checkpointed on L1 and you can mint
+          your NFT.
+        </p>
       </div>
     );
   }

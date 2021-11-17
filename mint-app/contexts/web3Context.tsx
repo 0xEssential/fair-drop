@@ -42,10 +42,7 @@ const Web3ContextProvider = ({ children }: any): ReactElement => {
       wallet: (wallet) => {
         if (wallet.provider) {
           setWallet(wallet);
-          const provider = new Web3Provider(
-            wallet.provider,
-            parseInt(process.env.MATIC_CHAIN_ID, 10),
-          );
+          const provider = new Web3Provider(wallet.provider, 'any');
           provider.on('network', (newNetwork, oldNetwork) => {
             // When a Provider makes its initial connection, it emits a "network"
             // event with a null oldNetwork along with the newNetwork. So, if the
