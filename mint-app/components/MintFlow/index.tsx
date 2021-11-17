@@ -46,7 +46,7 @@ export default function MintFlow({
     _claimTx && jsonProvider && setClaimTx(_claimTx);
   }, [jsonProvider]);
 
-  const ready = claimTx?.timestamp + 15 * 60 * 1000 > Date.now();
+  const ready = claimTx?.timestamp + 15 * 60 > Date.now();
 
   if (ready) {
     return (
