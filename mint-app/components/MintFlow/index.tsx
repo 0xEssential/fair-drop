@@ -92,9 +92,9 @@ export default function MintFlow({
           In{' '}
           <Countdown
             date={(claimTx?.timestamp + 15 * 60) * 1000}
-            onComplete={() => {
-              _setClaimTx({ ...claimTx, timestamp: claimTx.timestamp - 1 });
-            }}
+            // onComplete={() => {
+            //   _setClaimTx({ ...claimTx, timestamp: claimTx.timestamp - 1 });
+            // }}
             renderer={({ minutes, seconds }) => (
               <span>
                 {minutes} minutes {seconds} seconds
